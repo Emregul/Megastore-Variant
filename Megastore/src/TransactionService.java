@@ -40,6 +40,7 @@ public class TransactionService
 		/*Creates a log for an entity key=1*/
 		try {
 			log = new WriteLog("One");
+			System.out.println("adas");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
