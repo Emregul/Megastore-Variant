@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.HashMap;
+
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -18,10 +20,10 @@ import org.apache.hadoop.hbase.client.Result;
 class WriteLogReadResult{
 	public long vNextBal;
 	public long vBalloutNumber;
-	public String value;
-	
+	//public String value;
+	public HashMap<String,Long> value;
 	void print(){
-		System.out.println("vNextBal="+vNextBal+",vBalloutNumber="+vBalloutNumber+",value="+value);
+		System.out.println("vNextBal="+vNextBal+",vBalloutNumber="+vBalloutNumber + value.toString());
 	}
 }
 
@@ -92,16 +94,17 @@ public class WriteLog {
 		value = r.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes("balloutNumber"));
 		result.vBalloutNumber = Long.valueOf(Bytes.toString(value));
 		value = r.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes("value"));
+		//Ask Arlei about this - how to get map here
 		result.value = Bytes.toString(value);		
-		
 		return result;
 	}
 	
 	/*Writes balloutNumber and the value to the position in the log*/
-	public void write(long position, long balloutNumber, String value) throws IOException{
+	public void write(long position, long balloutNumber, HashMap<String,Long> value) throws IOException{
 		Put p = new Put(Bytes.toBytes(String.valueOf(position)));
 
 		p.add(Bytes.toBytes(columnFamily), Bytes.toBytes("balloutNumber"), Bytes.toBytes(String.valueOf(balloutNumber)));
+		//Ask Arlei
 		p.add(Bytes.toBytes(columnFamily), Bytes.toBytes("value"), Bytes.toBytes(value));
 		table.put(p);
 		this.position++;
@@ -112,13 +115,12 @@ public class WriteLog {
 	public boolean checkAndWrite(long position, long vNextBal, long propositionNumber) throws IOException{
 		Put p = new Put(Bytes.toBytes(String.valueOf(position)));
 		p.add(Bytes.toBytes(columnFamily), Bytes.toBytes("nextBal"), Bytes.toBytes(String.valueOf(propositionNumber)));
-		
 		return table.checkAndPut(Bytes.toBytes(String.valueOf(position)), Bytes.toBytes(columnFamily), Bytes.toBytes("nextBal"), Bytes.toBytes(String.valueOf(vNextBal)), p);
 		
 	}
 	
 	/*Checks whether propositionNumber corresponds to most recent update to nextBal, if yes then writes balloutNumber and the value to the position in the log*/
-	public boolean checkAndWrite2(long position, long propositionNumber, String value) throws IOException{
+	public boolean checkAndWrite2(long position, long propositionNumber, HashMap<String,Long> value) throws IOException{
 		Put p = new Put(Bytes.toBytes(String.valueOf(position)));
 		//Check with Arlei if it is ok to go this way
 		Get g = new Get(Bytes.toBytes(String.valueOf(position)));
@@ -129,10 +131,12 @@ public class WriteLog {
 		values = r.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes("balloutNumber"));
 		result.vBalloutNumber = Long.valueOf(Bytes.toString(values));
 		values = r.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes("value"));
+		//Ask Arlei
 		result.value = Bytes.toString(values);
 		
 		if(result.vNextBal == propositionNumber) {
 			p.add(Bytes.toBytes(columnFamily), Bytes.toBytes("balloutNumber"), Bytes.toBytes(String.valueOf(propositionNumber)));
+			//Ask Arlei
 			p.add(Bytes.toBytes(columnFamily), Bytes.toBytes("value"), Bytes.toBytes(value));
 			table.put(p);
 			return true;
@@ -155,7 +159,7 @@ public class WriteLog {
 	/*Variables used by Paxos*/
 	final long initialNextBal = -1;
 	final long initialBalloutNumber = -1;
-	final String initialValue = "";
+	final HashMap<String,Long> initialValue = null;
 	
 	/*HBase*/
 	private HTable table;

@@ -130,16 +130,13 @@ public class TransactionService
 				WriteLogReadResult result = log.read(p);
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
-						//use Emre's code to send udp message
-						String message = new String();
-						message = "" + cid + ";" + "SUCCESS" + ";" + result.vBalloutNumber + ";" + result.value +"";
+						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.value);
 						//send(message);
 						keepTrying = false;
 					}
 				}
 				else {
-					String message = new String();
-					message = "FAILURE" + ";" + result.vBalloutNumber + "";
+					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber,result.value);
 					//send(cid, message);
 					keepTrying = false;
 				}
@@ -158,13 +155,20 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public void receive_accept(int cid, int propNum, String value) {
+	public void receive_accept(int cid, int propNum, HashMap<String,Long> value) {
 		try {
+			String message = new String();
 			if(log.checkAndWrite2(log.getPosition(), propNum, value)) {
-				String message = new String();
-				message = "SUCCESS" ;
-				//send(cid,message);
+				//success
+				message = Messages.sendAcceptFromServiceToClient(cid,true);
+				
 			}
+			else {
+				//failure
+				message = message = Messages.sendAcceptFromServiceToClient(cid,false);
+				
+			}
+			//send message
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -176,7 +180,7 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public void receive_apply(int cid, int propNum, String value) {
+	public void receive_apply(int cid, int propNum, HashMap<String,Long> value) {
 		try {
 			log.write(log.getPosition(),propNum,value);
 		} catch (IOException e) {

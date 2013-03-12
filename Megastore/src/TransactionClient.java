@@ -36,6 +36,24 @@ public class TransactionClient {
 		ActiveTransactions = new HashMap<Long,Transaction>();
 	}
 	
+	/**
+	 * Receive Messages from AppLayer
+	 */
+	public void ReceiveBeginMessageFromAppLayer(long tid) {
+		
+	}
+
+	public void ReceiveReadMessageFromAppLayer(long tid, String key) {
+		
+	}
+	
+	public void ReceiveWriteMessageFromAppLayer(long tid, String key, long value) {
+		
+	}
+	
+	public void ReceiveCommitMessageFromAppLayer(long tid) {
+		
+	}
 	
 	public void SendMessagetoServerX(InetSocketAddress serverAddress, String message)
 	{//Send a string message to a given server

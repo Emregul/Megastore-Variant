@@ -20,6 +20,7 @@ public class Transaction {
 	public HashMap<Long,String> ReadSet;
 	public HashMap<Long,String> WriteSet;
 	public long transactionID;
+	public long timestamp;
 	
 	/**
 	 * Constructor
@@ -29,6 +30,11 @@ public class Transaction {
 		transactionID = transID;
 		ReadSet = new HashMap<Long,String>();
 		WriteSet = new HashMap<Long,String>();
+		timestamp = System.currentTimeMillis() / 1000L;
+	}
+	
+	public long getTimestamp() {
+		return this.timestamp;
 	}
 	
 	/**
