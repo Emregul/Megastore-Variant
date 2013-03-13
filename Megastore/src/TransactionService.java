@@ -131,13 +131,13 @@ public class TransactionService
 				WriteLogReadResult result = log.read(p);
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
-						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.value);
+						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values);
 						//send(message);
 						keepTrying = false;
 					}
 				}
 				else {
-					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber,result.value);
+					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber);
 					//send(cid, message);
 					keepTrying = false;
 				}
@@ -156,10 +156,10 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public void receive_accept(int cid, int propNum, HashMap<String,Long> value) {
+	public void receive_accept(int cid, int propNum, HashMap<String,String> value) {
 		try {
 			String message = new String();
-			if(log.checkAndWrite2(log.getPosition(), propNum, value)) {
+			if(log.checkAndWrite(log.getPosition(), propNum, value)) {
 				//success
 				message = Messages.sendAcceptFromServiceToClient(cid,true);
 				
@@ -181,7 +181,7 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public void receive_apply(int cid, int propNum, HashMap<String,Long> value) {
+	public void receive_apply(int cid, int propNum, HashMap<String,String> value) {
 		try {
 			log.write(log.getPosition(),propNum,value);
 		} catch (IOException e) {

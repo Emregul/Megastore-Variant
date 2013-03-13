@@ -1,36 +1,75 @@
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * Class for manipulating the content of a message in the Paxos implementation
+ * 
+ * @author arlei
+ *
+ */
 class MessageContent{
+	/**
+	 * Constructor
+	 */
 	public MessageContent(){
 		datacenter = -1;
 		propositionNumber = -1;
-		propositionValue = "";
+		propositionValues = new HashMap<String,String>();
 		cid = -1;
 		vBalloutNumber = -1;
-		vValue = "";
+		vValues = new HashMap<String,String>();
 		status = false;
 	}
 	
+	/**
+	 * Prints the content of a message, some parts may be set to default values
+	 */
 	public void print(){
 		System.out.println("datacenter = "+datacenter);
 		System.out.println("propositionNumber = "+propositionNumber);
-		System.out.println("propositionValue = "+propositionValue);
+		
+		System.out.println("propositionValues = ");
+		
+		for (Map.Entry<String, String> entry : propositionValues.entrySet()) {
+		    System.out.println("variable = " + entry.getKey() + ", value = " + entry.getValue());
+		}
+		
 		System.out.println("cid = "+cid);
 		System.out.println("vBalloutNumber = "+vBalloutNumber);
-		System.out.println("vValue = "+vValue);
+		
+		System.out.println("vValues = ");
+		
+		for (Map.Entry<String, String> entry : vValues.entrySet()) {
+		    System.out.println("variable = " + entry.getKey() + ", value = " + entry.getValue());
+		}
+				
 		System.out.println("status = "+status);
 	}
 	
 	public String entityKey;
 	public int datacenter;
 	public long propositionNumber;
-	public String propositionValue;
-	int cid;
-	long vBalloutNumber;
-	String vValue;
-	boolean status;
+	public HashMap<String,String> propositionValues;
+	public int cid;
+	public long vBalloutNumber;
+	public HashMap<String,String> vValues;
+	public boolean status;
 }
 
+/**
+ * Class for constructing and checking a message in the implementation of the Paxos protocol
+ * 
+ * @author arlei
+ *
+ */
 public class Messages {
-	/*Message parsing*/
+	/**
+	 * Parses a message, which means identifying the type of message and printing it.
+	 * 
+	 * @param message
+	 * @return
+	 */
 	public static MessageContent parse(String message){
 		MessageContent content = null;
 		if(Messages.isSendPrepareFromClientToService(message)){
@@ -71,32 +110,45 @@ public class Messages {
 		return content;
 	}
 	
+	/**
+	 * Tests the message creation and parsing
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args){
 		int datacenter  = 0;
 		long propositionNumber = 10;
-		String propositionValue = "100";
+		HashMap<String,String> propositionValues = new HashMap<String,String>();
 		int cid = 1000;
 		long vBalloutNumber = 10000;
-		String vValue = "100";
+		HashMap<String,String> vValues = new HashMap<String,String>();
 		boolean status = true;
+		
+		propositionValues.put("X", "0");
+		propositionValues.put("Y", "1");
+		propositionValues.put("Z", "2");
+		
+		vValues.put("X", "3");
+		vValues.put("Y", "4");
+		vValues.put("Z", "5");
 		
 		String message = Messages.sendPrepareFromClientToService(datacenter, propositionNumber);
 		System.out.println("message = "+message);
 		parse(message);
 		
-		message = Messages.sendAcceptFromClientToService(datacenter, propositionNumber, propositionValue);
+		message = Messages.sendAcceptFromClientToService(datacenter, propositionNumber, propositionValues);
 		System.out.println("message = "+message);
 		parse(message);
 				
-		message = Messages.sendApplyFromClientToService(datacenter, propositionNumber, propositionValue);
+		message = Messages.sendApplyFromClientToService(datacenter, propositionNumber, propositionValues);
 		System.out.println("message = "+message);
 		parse(message);
 				
-		message = Messages.sendPrepareSuccessFromServiceToClient(cid, vBalloutNumber, vValue);
+		message = Messages.sendPrepareSuccessFromServiceToClient(cid, vBalloutNumber, vValues);
 		System.out.println("message = "+message);
 		parse(message);
 						
-		message = Messages.sendPrepareFailureFromServiceToClient(cid, vBalloutNumber, vValue);
+		message = Messages.sendPrepareFailureFromServiceToClient(cid, vBalloutNumber);
 		System.out.println("message = "+message);
 		parse(message);
 				
@@ -104,32 +156,106 @@ public class Messages {
 		System.out.println("message = "+message);
 		parse(message);
 	}
+	
 	/*client => service*/
+	
+	
+	/**
+	 * Creates message send(d,PREPARE,propNum)
+	 * 
+	 * @param datacenter
+	 * @param propositionNumber
+	 * @return the message
+	 */
 	static String sendPrepareFromClientToService(int datacenter, long propositionNumber){
 		return "PREPARE,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber);
 	}
 	
-	static String sendAcceptFromClientToService(int datacenter, long propositionNumber, String propositionValue){
-		return "ACCEPT,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","+propositionValue;
+	/**
+	 * Creates message send(d,ACCEPT,proposalNumber,proposalValue)
+	 * 
+	 * @param datacenter
+	 * @param propositionNumber
+	 * @param propositionValues
+	 * @return the message
+	 */
+	static String sendAcceptFromClientToService(int datacenter, long propositionNumber, HashMap<String,String> propositionValues){
+		String message = "ACCEPT,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber);
+		
+		for (Map.Entry<String, String> entry : propositionValues.entrySet()) {
+		   message = message + "," + entry.getKey() + "=" + entry.getValue();
+		}
+		
+		return message;
 	}
 	
-	static String sendApplyFromClientToService(int datacenter, long propositionNumber, String propositionValue){
-		return "APPLY,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","+propositionValue;
+	/**
+	 * Creates message send(d,proposalNumber,propValue)
+	 * 
+	 * @param datacenter
+	 * @param propositionNumber
+	 * @param propositionValues
+	 * @return the message
+	 */
+	static String sendApplyFromClientToService(int datacenter, long propositionNumber, HashMap<String,String> propositionValues){
+		String message = "APPLY,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber);
+		
+		for (Map.Entry<String, String> entry : propositionValues.entrySet()) {
+			   message = message + "," + entry.getKey() + "=" + entry.getValue();
+		}
+		
+		return message;
 	}
 	
 	/*service => client*/
-	static String sendPrepareSuccessFromServiceToClient(int cid, long vBalloutNumber, String vValue){
-		return "PREPARE,SUCCESS,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber)+","+vValue;
+		
+	/**
+	 * Creates message send(cid,status,vBalloutNu8mber,vValue)
+	 * 
+	 * @param cid
+	 * @param vBalloutNumber
+	 * @param vValues
+	 * @return the message
+	 */
+	static String sendPrepareSuccessFromServiceToClient(int cid, long vBalloutNumber, HashMap<String,String> vValues){
+		String message =  "PREPARE,SUCCESS,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber);
+		
+		for (Map.Entry<String, String> entry : vValues.entrySet()) {
+			   message = message + "," + entry.getKey() + "=" + entry.getValue();
+		}
+		
+		return message;
 	}
 	
-	static String sendPrepareFailureFromServiceToClient(int cid, long vBalloutNumber, String vValue){
+	/**
+	 * Creates message send(cid,FAILURE,vBalloutNumber)
+	 * 
+	 * @param cid
+	 * @param vBalloutNumber
+	 * @return the message
+	 */
+	static String sendPrepareFailureFromServiceToClient(int cid, long vBalloutNumber){
 		return "PREPARE,FAILURE,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber);
 	}
 	
+	
+	/**
+	 * Creates message send(cid,status)
+	 * 
+	 * @param cid
+	 * @param status
+	 * @return the message
+	 */
 	static String sendAcceptFromServiceToClient(int cid, boolean status){
 		return "ACCEPT,"+String.valueOf(cid)+","+String.valueOf(status);
 	}
 	
+	/**
+	 * Checks if the message is send(d,PREPARE,propNum)
+	 * 
+	 * @param message
+	 * @return TRUE or FALSE
+	 */
 	static boolean isSendPrepareFromClientToService(String message){
 		String[] fields = message.split(",");
 		
@@ -145,10 +271,16 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Checks if the message is send(d,ACCEPT,proposalNumber,proposalValue)
+	 * 
+	 * @param message
+	 * @return TRUE or FALSE
+	 */
 	static boolean isSendAcceptFromClientToService(String message){
 		String[] fields = message.split(",");
 		
-		if(fields.length != 4){
+		if(fields.length < 4){
 			return false;
 		}
 		
@@ -160,10 +292,16 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Checks if the message is send(d,proposalNumber,propValue)
+	 * 
+	 * @param message
+	 * @return TRUE or FALSE
+	 */
 	static boolean isSendApplyFromClientToService(String message){
 		String[] fields = message.split(",");
 		
-		if(fields.length != 4){
+		if(fields.length < 4){
 			return false;
 		}
 		
@@ -175,10 +313,16 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Checks if the message is send(cid,status,vBalloutNu8mber,vValue)
+	 * 
+	 * @param message
+	 * @return TRUE or FALSE
+	 */
 	static boolean isSendPrepareSuccessFromServiceToClient(String message){
 		String[] fields = message.split(",");
 		
-		if(fields.length != 5){
+		if(fields.length < 5){
 			return false;
 		}
 		
@@ -190,6 +334,12 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Checks if the message is send(cid,FAILURE,vBalloutNumber)
+	 * 
+	 * @param message
+	 * @return TRUE or FALSE
+	 */
 	static boolean isSendPrepareFailureFromServiceToClient(String message){
 		String[] fields = message.split(",");
 		
@@ -205,6 +355,12 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Checks if the message is send(cid,status)
+	 * 
+	 * @param message
+	 * @return TRUE or FALSE
+	 */
 	static boolean isSendAcceptFromServiceToClient(String message){
 		String[] fields = message.split(",");
 		
@@ -220,45 +376,59 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * Gets the content from a message
+	 * 
+	 * @param message
+	 * @return the content
+	 */
 	static public MessageContent getContent(String message){
 		MessageContent content = new MessageContent();
 		String[] fields = message.split(",");
+		String[] varValue;
+
 		
 		if(Messages.isSendPrepareFromClientToService(message)){
-			//"PREPARE,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","+entityKey;
 			content.datacenter = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
 		}
 		
 		if(Messages.isSendAcceptFromClientToService(message)){
-			//"ACCEPT,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","+propositionValue+","+entityKey;
 			content.datacenter = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
-			content.propositionValue = fields[3];
+			
+			for(int f = 3; f < fields.length; f++){
+				varValue = fields[f].split("=");
+				content.propositionValues.put(varValue[0],varValue[1]);
+			}
 		}
 		
 		if(Messages.isSendApplyFromClientToService(message)){
-			//"APPLY,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","+propositionValue+","+entityKey;
 			content.datacenter = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
-			content.propositionValue = fields[3];
+			
+			for(int f = 3; f < fields.length; f++){
+				varValue = fields[f].split("=");
+				content.propositionValues.put(varValue[0],varValue[1]);
+			}
 		}
 		
 		if(Messages.isSendPrepareSuccessFromServiceToClient(message)){
-			//"PREPARE,SUCCESS,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber)+","+vValue+","+entityKey;
 			content.cid = Integer.parseInt(fields[2]);
 			content.propositionNumber = Long.parseLong(fields[3]);
-			content.propositionValue = fields[4];
+			
+			for(int f = 4; f < fields.length; f++){
+				varValue = fields[f].split("=");
+				content.vValues.put(varValue[0],varValue[1]);
+			}
 		}
 		
 		if(Messages.isSendPrepareFailureFromServiceToClient(message)){
-			//"PREPARE,FAILURE,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber)+","+entityKey;
 			content.cid = Integer.parseInt(fields[2]);
 			content.vBalloutNumber = Long.parseLong(fields[3]);
 		}
 		
 		if(Messages.isSendAcceptFromServiceToClient(message)){
-			//"ACCEPT,"+String.valueOf(cid)+","+String.valueOf(status)+","+entityKey;
 			content.cid = Integer.parseInt(fields[1]);
 			content.status = Boolean.parseBoolean(fields[2]);
 		}

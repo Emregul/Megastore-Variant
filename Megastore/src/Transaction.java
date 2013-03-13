@@ -17,8 +17,8 @@ import java.util.*;
 
 
 public class Transaction {
-	public HashMap<Long,String> ReadSet;
-	public HashMap<Long,String> WriteSet;
+	public HashMap<String,String> ReadSet;
+	public HashMap<String,String> WriteSet;
 	public long transactionID;
 	public long timestamp;
 	
@@ -28,8 +28,8 @@ public class Transaction {
 	 */
 	public Transaction(long transID) {
 		transactionID = transID;
-		ReadSet = new HashMap<Long,String>();
-		WriteSet = new HashMap<Long,String>();
+		ReadSet = new HashMap<String,String>();
+		WriteSet = new HashMap<String,String>();
 		timestamp = System.currentTimeMillis() / 1000L;
 	}
 	
@@ -42,7 +42,7 @@ public class Transaction {
 	 * @param key
 	 * @param value
 	 */
-	public void addToReadSet(long key, String value) {
+	public void addToReadSet(String key, String value) {
 		ReadSet.put(key, value);
 	}
 	
@@ -51,7 +51,7 @@ public class Transaction {
 	 * @param key
 	 * @param value
 	 */
-	public void addToWriteSet(long key, String value) {
+	public void addToWriteSet(String key, String value) {
 		WriteSet.put(key, value);
 	}
 	

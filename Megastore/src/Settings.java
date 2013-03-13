@@ -13,5 +13,6 @@ public class Settings
 		serverIpMap.put(1, new InetSocketAddress("localhost", 11115));
 		serverIpMap.put(2, new InetSocketAddress("127.0.0.1", 11112));
 		serverIpMap.put(3, new InetSocketAddress("127.0.0.1", 11113));
+		serverIpList = (InetSocketAddress[]) serverIpMap.values().toArray();
 	}
 }

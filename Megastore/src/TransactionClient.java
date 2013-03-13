@@ -55,17 +55,28 @@ public class TransactionClient {
 		
 	}
 	
-	public void SendMessagetoServerX(InetSocketAddress serverAddress, String message)
+	public String SendMessagetoServerX(InetSocketAddress serverAddress, String message)
 	{//Send a string message to a given server
 		Socket socket;
 		try {
 			socket = new Socket(serverAddress.getHostName(),serverAddress.getPort());
 			MessageSender newThread = new MessageSender(socket,message);
 			newThread.start();
+			while (newThread.isAlive())
+			{
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return newThread.parsedMessage;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	public class MessageSender extends Thread
 	{//Thread that opens the socket connection and sends the message
@@ -73,6 +84,7 @@ public class TransactionClient {
 		private PrintWriter toTransactionServer;
 		private BufferedReader fromTransactionServer;
 		private String message;
+		private String parsedMessage;
 		
 		public MessageSender(Socket socket, String message)
 		{
@@ -93,8 +105,7 @@ public class TransactionClient {
 				//Parse given message send it to the server, read response from server and close the socket
 				toTransactionServer.println(message);
 				toTransactionServer.flush();
-				message = fromTransactionServer.readLine();
-				MessageContent parsedMessage = Messages.parse(message);
+				parsedMessage = fromTransactionServer.readLine();
 				socket.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -139,7 +150,7 @@ public class TransactionClient {
 	 * @param key
 	 * @param value
 	 */
-	public void write(long transactionID, long key, String value) {
+	public void write(long transactionID, String key, String value) {
 		Transaction t = ActiveTransactions.get(transactionID);
 		t.addToWriteSet(key,value);
 	}
@@ -153,8 +164,100 @@ public class TransactionClient {
 		boolean result = false;
 		Transaction t = ActiveTransactions.get(transactionID);
 		//code for commit protocol
+		HashMap<String,String> propVal = t.WriteSet;
+		return runPAXOSGivenPropNum(0,propVal);
+	}
+	public boolean abort()
+	{
+		return true;
+	}
+	private boolean runPAXOSGivenPropNum(long propNum,HashMap<String,String> propVal)
+	{
+		int D = Settings.serverIpList.length;
+		//PREPARE PHASE
+		List<MessageContent> responseSet = preparePhaseForPAXOS(propNum,propVal);
+		//ACCEPT PHASE
+		HashMap<String,String> propValue = findWinningVal(responseSet, propVal);
+		int ackCount = 0;
+		for (int i = 0; i < Settings.serverIpList.length; i++) 
+		{
+			String response = SendMessagetoServerX(Settings.serverIpList[i],Messages.sendAcceptFromClientToService(i+1, propNum, propValue));
+			MessageContent parsedResponse = Messages.parse(response);
+			if (parsedResponse.status)
+				ackCount++;
+		}
 		
-		return result;
+		if (ackCount < D/2)
+		{
+			try {
+				Thread.sleep((long) (Math.random()*100));
+				propNum  = nextPropNumber(responseSet,propNum);
+				runPAXOSGivenPropNum(propNum,propVal);
+				return false;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for (int i = 0; i < Settings.serverIpList.length; i++) 
+		{
+			SendMessagetoServerX(Settings.serverIpList[i], Messages.sendApplyFromClientToService(i+1, propNum, propValue));	
+		}
+		if (propValue.equals(propVal))
+			return true;
+		{
+			abort();//Maybe try to promote.
+			return false;
+		}
+		
+		
+	}
+	
+	private List<MessageContent>  preparePhaseForPAXOS(long propNum,HashMap<String,String> propVal)
+	{
+		boolean keepTrying = true;
+		int D = Settings.serverIpList.length;
+		List<MessageContent> responseSet = null;
+		int ackCount;
+		while (keepTrying)
+		{
+			ackCount = 0;
+			responseSet = new ArrayList<MessageContent>();
+			for (int i = 0; i < Settings.serverIpList.length; i++) 
+			{
+				String response = SendMessagetoServerX(Settings.serverIpList[i],Messages.sendPrepareFromClientToService(i+1, propNum));
+				MessageContent parsedResponse = Messages.parse(response);
+				responseSet.add(parsedResponse);
+				if (parsedResponse.status)
+					ackCount++;
+				if (ackCount>(D/2))
+					keepTrying = false;
+				else
+				{
+					try {
+						Thread.sleep((long) (Math.random()*100));
+						propNum  = nextPropNumber(responseSet,propNum);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return responseSet;
+	}
+	
+	private long nextPropNumber(List<MessageContent> responseSet, long propNum)
+	{
+		long maxPropNumber = propNum;
+		for (int i = 0; i < responseSet.size(); i++) 
+		{
+			if (responseSet.get(i).propositionNumber > maxPropNumber)
+			{
+				maxPropNumber = responseSet.get(i).propositionNumber;
+			}
+		}
+		return maxPropNumber;
 	}
 	/**
 	 * findWinningVal
@@ -162,9 +265,21 @@ public class TransactionClient {
 	 * @param propVal
 	 * @return
 	 */
-	public String findWinningVal(List responseSet, String propVal) {
-		String winningVal = null;
-		return winningVal;
+	public HashMap<String,String> findWinningVal(List<MessageContent> responseSet, HashMap<String,String> propVal) {
+		HashMap<String,String> winningValue = null;
+		long maxProp = Long.MIN_VALUE;
+		for (int i = 0; i < responseSet.size(); i++)
+		{
+			MessageContent current = responseSet.get(i);
+			if (current.propositionNumber>maxProp && current.propositionValues != null)
+			{
+				maxProp = current.propositionNumber;
+				winningValue = current.propositionValues;
+			}
+		}
+		if (winningValue == null)
+			winningValue = propVal;
+		return winningValue;
 	}
 	/**
 	 * enhancedFindWinningVal
@@ -181,7 +296,7 @@ public class TransactionClient {
 	{
 		Settings.init();
 		TransactionClient client1 = new TransactionClient();
-		client1.SendMessagetoServerX(Settings.serverIpMap.get(1),Messages.sendAcceptFromClientToService(1, 5, "a"));
+		//client1.SendMessagetoServerX(Settings.serverIpMap.get(1),Messages.sendAcceptFromClientToService(1, 5, "a"));
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
