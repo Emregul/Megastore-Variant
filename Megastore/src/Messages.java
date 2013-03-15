@@ -20,6 +20,7 @@ class MessageContent{
 		vBalloutNumber = -1;
 		vValues = new HashMap<String,String>();
 		status = false;
+		messageType = null;
 	}
 	
 	/**
@@ -45,6 +46,7 @@ class MessageContent{
 		}
 				
 		System.out.println("status = "+status);
+		System.out.println("messageType = "+messageType);
 	}
 	
 	public String entityKey;
@@ -55,6 +57,8 @@ class MessageContent{
 	public long vBalloutNumber;
 	public HashMap<String,String> vValues;
 	public boolean status;
+	//{"PREPARE", "ACCEPT", "APPLY", "PREPARE_SUCCESS", "PREPARE_FAILURE"}
+	public String messageType;
 }
 
 /**
@@ -391,21 +395,25 @@ public class Messages {
 		if(Messages.isSendPrepareFromClientToService(message)){
 			content.datacenter = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
+			content.messageType = "PREPARE";
 		}
 		
 		if(Messages.isSendAcceptFromClientToService(message)){
 			content.datacenter = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
+			content.messageType ="ACCEPT";
 			
 			for(int f = 3; f < fields.length; f++){
 				varValue = fields[f].split("=");
 				content.propositionValues.put(varValue[0],varValue[1]);
 			}
+			
 		}
 		
 		if(Messages.isSendApplyFromClientToService(message)){
 			content.datacenter = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
+			content.messageType = "APPLY";
 			
 			for(int f = 3; f < fields.length; f++){
 				varValue = fields[f].split("=");
@@ -416,7 +424,7 @@ public class Messages {
 		if(Messages.isSendPrepareSuccessFromServiceToClient(message)){
 			content.cid = Integer.parseInt(fields[2]);
 			content.propositionNumber = Long.parseLong(fields[3]);
-			
+			content.messageType = "PREPARE_SUCCESS";
 			for(int f = 4; f < fields.length; f++){
 				varValue = fields[f].split("=");
 				content.vValues.put(varValue[0],varValue[1]);
@@ -426,11 +434,13 @@ public class Messages {
 		if(Messages.isSendPrepareFailureFromServiceToClient(message)){
 			content.cid = Integer.parseInt(fields[2]);
 			content.vBalloutNumber = Long.parseLong(fields[3]);
+			content.messageType = "PREPARE_FAILURE";
 		}
 		
 		if(Messages.isSendAcceptFromServiceToClient(message)){
 			content.cid = Integer.parseInt(fields[1]);
 			content.status = Boolean.parseBoolean(fields[2]);
+			content.messageType = "ACCEPT";
 		}
 		
 		return content;

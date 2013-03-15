@@ -106,12 +106,22 @@ public class TransactionService
 			try {
 				message = fromTransactionClient.readLine();
 				MessageContent parsedMessage = Messages.parse(message);
+				if(parsedMessage.messageType.equals("PREPARE")) {
+					receive_prepare(parsedMessage.cid, parsedMessage.propositionNumber,toTransactionClient);
+				}
+				else if(parsedMessage.messageType.equals("ACCEPT")) {
+					receive_accept(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.vValues,toTransactionClient);
+				}
+				else if(parsedMessage.messageType.equals("APPLY")) {
+					receive_apply(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.vValues);
+				}
+				else
+					System.out.println("Error: Unrecognized message format received from client");
+				
+				
 				//parseMessage
 				//call corresponding Method
 				//send to client using InputStream
-				String response = "test";
-				toTransactionClient.println(response);
-				toTransactionClient.flush();
 				socket.close();
 				//close connections
 			} catch (IOException e) {
@@ -122,7 +132,7 @@ public class TransactionService
 		}
 	}
 	
-	public synchronized void receive_prepare(int cid, int propNum) {
+	public synchronized void receive_prepare(int cid, long propNum, PrintWriter toTransactionClient) {
 		boolean keepTrying = true;
 		while(keepTrying) {
 			try {
@@ -132,13 +142,15 @@ public class TransactionService
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
 						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values);
-						//send(message);
+						toTransactionClient.println(message);
+						toTransactionClient.flush();
 						keepTrying = false;
 					}
 				}
 				else {
 					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber);
-					//send(cid, message);
+					toTransactionClient.println(message);
+					toTransactionClient.flush();
 					keepTrying = false;
 				}
 			}
@@ -156,20 +168,20 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public synchronized void receive_accept(int cid, int propNum, HashMap<String,String> value) {
+	public synchronized void receive_accept(int cid, long propNum, HashMap<String,String> value, PrintWriter toTransactionClient) {
 		try {
 			String message = new String();
 			if(log.checkAndWrite(log.getPosition(), propNum, value)) {
 				//success
 				message = Messages.sendAcceptFromServiceToClient(cid,true);
-				
 			}
 			else {
 				//failure
-				message = message = Messages.sendAcceptFromServiceToClient(cid,false);
-				
+				message = Messages.sendAcceptFromServiceToClient(cid,false);
 			}
 			//send message
+			toTransactionClient.println(message);
+			toTransactionClient.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -181,7 +193,7 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public synchronized void receive_apply(int cid, int propNum, HashMap<String,String> value) {
+	public synchronized void receive_apply(int cid, long propNum, HashMap<String,String> value) {
 		try {
 			log.write(log.getPosition(),propNum,value);
 		} catch (IOException e) {
