@@ -176,14 +176,14 @@ public class TransactionClient {
 		Transaction t = ActiveTransactions.get(transactionID);
 		//code for commit protocol
 		HashMap<String,String> propVal = t.WriteSet;
-		//Ask Emre why propNum is passed as 0 it should be this.propNum
-		if(runPAXOSGivenPropNum(0,propVal)) {
+		
+		if(runPAXOSGivenPropNum(propVal)) {
 			ActiveTransactions.remove(transactionID);
 			return true;
 		}
-		else {
+		//promotion here
+		else 
 			return false;
-		}
 	}
 	/**
 	 * abprt - Transaction
@@ -195,7 +195,7 @@ public class TransactionClient {
 		//to be written
 		return true;
 	}
-	private boolean runPAXOSGivenPropNum(long propNum,HashMap<String,String> propVal)
+	private boolean runPAXOSGivenPropNum(HashMap<String,String> propVal)
 	{
 		int D = Settings.serverIpList.length;
 		//PREPARE PHASE
@@ -216,8 +216,7 @@ public class TransactionClient {
 			try {
 				Thread.sleep((long) (Math.random()*100));
 				propNum  = nextPropNumber(responseSet,propNum);
-				runPAXOSGivenPropNum(propNum,propVal);
-				return false;
+				return runPAXOSGivenPropNum(propVal);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -230,14 +229,14 @@ public class TransactionClient {
 		if (propValue.equals(propVal))
 			return true;
 		{
-			abort();//Maybe try to promote.
+			//abort();//Maybe try to promote.
 			return false;
 		}
 		
 		
 	}
 	
-	private List<MessageContent>  preparePhaseForPAXOS(long propNum,HashMap<String,String> propVal)
+	private List<MessageContent>  preparePhaseForPAXOS(HashMap<String,String> propVal)
 	{
 		boolean keepTrying = true;
 		int D = Settings.serverIpList.length;
