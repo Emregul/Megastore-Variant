@@ -60,7 +60,7 @@ public class Transaction {
 	 * @param key
 	 * @return null if key is not present else value
 	 */
-	public String readLocal(long key) {
+	public String readLocal(String key) {
 			return WriteSet.get(key);
 	}
 	

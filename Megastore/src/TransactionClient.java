@@ -39,22 +39,33 @@ public class TransactionClient {
 	/**
 	 * Receive Messages from AppLayer
 	 */
-	public void ReceiveBeginMessageFromAppLayer(long tid) {
-		
+	public void ReceiveBeginMessageFromAppLayer(long transactionID) {
+		this.begin(transactionID);
 	}
 
-	public void ReceiveReadMessageFromAppLayer(long tid, String key) {
-		
+	public String ReceiveReadMessageFromAppLayer(long transactionID, String key) {
+		String result = read(transactionID, key);
+		return result;
 	}
 	
-	public void ReceiveWriteMessageFromAppLayer(long tid, String key, long value) {
-		
+	public void ReceiveWriteMessageFromAppLayer(long transactionID, String key, String value) {
+		write(transactionID, key, value);
 	}
 	
-	public void ReceiveCommitMessageFromAppLayer(long tid) {
-		
+	public void ReceiveCommitMessageFromAppLayer(long transactionID) {
+		commit(transactionID);
 	}
 	
+	public void ReceiveAbortMessageFromAppLayer(long transactionID) {
+		abort(transactionID);
+	}
+	
+	/**
+	 * SendMessagetoServerX
+	 * @param serverAddress
+	 * @param message
+	 * @return
+	 */
 	public String SendMessagetoServerX(InetSocketAddress serverAddress, String message)
 	{//Send a string message to a given server
 		Socket socket;
@@ -78,6 +89,7 @@ public class TransactionClient {
 		}
 		return null;
 	}
+	
 	public class MessageSender extends Thread
 	{//Thread that opens the socket connection and sends the message
 		private Socket socket;
@@ -132,7 +144,7 @@ public class TransactionClient {
 	 * @param key
 	 * @return
 	 */
-	public String read(long transactionID, long key) {
+	public String read(long transactionID, String key) {
 
 		Transaction t = ActiveTransactions.get(transactionID);
 		String value = t.readLocal(key);
@@ -161,14 +173,26 @@ public class TransactionClient {
 	 * @return true - on success , false - on failure
 	 */
 	public boolean commit(long transactionID) {
-		boolean result = false;
 		Transaction t = ActiveTransactions.get(transactionID);
 		//code for commit protocol
 		HashMap<String,String> propVal = t.WriteSet;
-		return runPAXOSGivenPropNum(0,propVal);
+		//Ask Emre why propNum is passed as 0 it should be this.propNum
+		if(runPAXOSGivenPropNum(0,propVal)) {
+			ActiveTransactions.remove(transactionID);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
-	public boolean abort()
+	/**
+	 * abprt - Transaction
+	 * @param transactionID
+	 * @return
+	 */
+	public boolean abort(long transactionID)
 	{
+		//to be written
 		return true;
 	}
 	private boolean runPAXOSGivenPropNum(long propNum,HashMap<String,String> propVal)
@@ -288,6 +312,7 @@ public class TransactionClient {
 	 * @return
 	 */
 	public String enhancedFindWinningVal(List responseSet, String propVal) {
+		//have to write this
 		String winningVal = null;
 		return winningVal;
 	}

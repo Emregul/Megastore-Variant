@@ -122,7 +122,7 @@ public class TransactionService
 		}
 	}
 	
-	public void receive_prepare(int cid, int propNum) {
+	public synchronized void receive_prepare(int cid, int propNum) {
 		boolean keepTrying = true;
 		while(keepTrying) {
 			try {
@@ -156,7 +156,7 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public void receive_accept(int cid, int propNum, HashMap<String,String> value) {
+	public synchronized void receive_accept(int cid, int propNum, HashMap<String,String> value) {
 		try {
 			String message = new String();
 			if(log.checkAndWrite(log.getPosition(), propNum, value)) {
@@ -181,7 +181,7 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public void receive_apply(int cid, int propNum, HashMap<String,String> value) {
+	public synchronized void receive_apply(int cid, int propNum, HashMap<String,String> value) {
 		try {
 			log.write(log.getPosition(),propNum,value);
 		} catch (IOException e) {
