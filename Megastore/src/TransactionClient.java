@@ -27,6 +27,7 @@ public class TransactionClient {
 	//maintains the state
 	private long propNum;
 	private HashMap<Long,Transaction> ActiveTransactions;
+	private Database db;
 	
 	/**
 	 * Constructor
@@ -34,6 +35,12 @@ public class TransactionClient {
 	public TransactionClient() {
 		propNum = 0;
 		ActiveTransactions = new HashMap<Long,Transaction>();
+		try {
+			db = new Database();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -151,9 +158,13 @@ public class TransactionClient {
 		if(value != null)
 			return value;
 		else
-			return value;
-			//read from data-store
+			try {
+				value = db.read(key, t.timestamp);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
+		return value;
 	}
 	
 	/**
@@ -199,7 +210,7 @@ public class TransactionClient {
 	{
 		int D = Settings.serverIpList.length;
 		//PREPARE PHASE
-		List<MessageContent> responseSet = preparePhaseForPAXOS(propNum,propVal);
+		List<MessageContent> responseSet = preparePhaseForPAXOS(propVal);
 		//ACCEPT PHASE
 		HashMap<String,String> propValue = findWinningVal(responseSet, propVal);
 		int ackCount = 0;
