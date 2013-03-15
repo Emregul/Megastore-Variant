@@ -1,14 +1,16 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
@@ -27,9 +29,69 @@ public class Database {
 	/**
 	 * Testing the database
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public static void main(String[] args) throws IOException {
+		
+		//Creating database
+		Database db = new Database();
+		
+		//Creating the first version of the variables
+		HashMap <String,String> values0 = new HashMap<String,String>();
+		values0.put("X", "X0");
+		values0.put("Y", "Y0");
+		values0.put("Z", "Z0");
+		
+		//Writing the variables with timestamp 1
+		db.write(values0, 1);
+		
+		//Creating the second version of the variables
+		HashMap <String,String> values1 = new HashMap<String,String>();
+		values1.put("X", "X1");
+		values1.put("Y", "Y1");
+		values1.put("Z", "Z1");
+		
+		//Writing the variables with timestamp 2
+		db.write(values1, 2);
+		
+		//Generating a list of keys to be read from the database
+		List <String> keys = new ArrayList<String>();
+		keys.add("X");
+		keys.add("Y");
+		keys.add("Z");
+		
+		//Reading the keys for timestamp 2, the first version should be returned
+		HashMap<String,String> recovered0 = db.read(keys, 2);
+		
+		for (Map.Entry<String, String> entry : recovered0.entrySet()) {
+		    System.out.println("variable = " + entry.getKey() + ", value = " + entry.getValue());
+		}
+		
+		//Reading the keys for timestamp 3, the second version should be returned
+		HashMap<String,String> recovered1 = db.read(keys, 3);
+				
+		for (Map.Entry<String, String> entry : recovered1.entrySet()) {
+			System.out.println("variable = " + entry.getKey() + ", value = " + entry.getValue());
+		}
+		
+		//Reading a single value
+		String value = db.read("Z", 2);
+		System.out.println("variable = Z, value = " + value);
+		
+		//Removing the first version of all the variables from the database
+		db.removeOldVersions(keys, 1);
+		
+		//Reading the keys for timestamp 2, the first version (now null) should be returned
+		recovered0 = db.read(keys, 2);
+				
+		for (Map.Entry<String, String> entry : recovered0.entrySet()) {
+		    System.out.println("variable = " + entry.getKey() + ", value = " + entry.getValue());
+		}
+				
+		//Reading the keys for timestamp 3, the second version should be returned
+		recovered1 = db.read(keys, 3);
+						
+		for (Map.Entry<String, String> entry : recovered1.entrySet()) {
+			System.out.println("variable = " + entry.getKey() + ", value = " + entry.getValue());
+		}		
 	}
 	
 	/**
@@ -63,6 +125,15 @@ public class Database {
 		table = new HTable(config, tableName);
 	}
 	
+	/**
+	 * Reads the set of keys from the database. The most recent version that
+	 * updated before the timestamp.
+	 * 
+	 * @param keys
+	 * @param timestamp
+	 * @return the values read as a hashmap
+	 * @throws IOException
+	 */
 	public HashMap<String,String> read(List<String> keys, long timestamp) throws IOException{
 		Iterator<String> iterator = keys.iterator();
 		Get g;
@@ -84,10 +155,33 @@ public class Database {
 		return values;
 	}
 	
-	public void read(List<String> keys){
+	/**
+	 * Reads a key from the database. The most recent version that
+	 * updated before the timestamp.
+	 * 
+	 * @param keys
+	 * @param timestamp
+	 * @return the value read
+	 * @throws IOException
+	 */
+	public String read(String key, long timestamp) throws IOException{
+		Get g = new Get(Bytes.toBytes(key));
+		Result r;
+		g.setTimeRange(0,timestamp);
+		r = table.get(g);
+		String value = Bytes.toString(r.getValue(Bytes.toBytes(columnFamily), 
+				Bytes.toBytes(column)));
 		
+		return value;
 	}
 	
+	/**
+	 * Writes the values to the database with the given timestamp.
+	 * 
+	 * @param values
+	 * @param timestamp
+	 * @throws IOException
+	 */
 	public void write(HashMap<String,String> values, long timestamp) throws IOException{
 		Put p = null;
 		
@@ -97,11 +191,38 @@ public class Database {
 					Bytes.toBytes(column),
 					timestamp,
 					Bytes.toBytes(entry.getValue()));
-		}
-		
-		if(values.size() > 0){
 			table.put(p);
 		}
+	}
+	
+	/**
+	 * Remove from the set of keys all the versions that are not unique
+	 * and have timestamps that are older or equal to the one passed
+	 * 
+	 * @param keys
+	 * @param timestamp
+	 */
+	public void removeOldVersions(List<String> keys, long timestamp) throws IOException{
+		Iterator<String> iterKeys = keys.iterator();
+		String key;
+		Get g;
+		Result r;
+		List<KeyValue> keyValues;
+		Delete del;
+						
+		while (iterKeys.hasNext()) {
+			key = iterKeys.next();
+			g = new Get(Bytes.toBytes(key));
+			g.setMaxVersions(maxVersions);
+			r = table.get(g);
+			keyValues = r.getColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column));
+			
+			if(keyValues.size() > 1){
+				del = new Delete(r.getRow(), timestamp);	//FIXME: Why is this deprecated?
+				table.delete(del);
+			}			
+		}
+			
 	}
 	
 	/*HBase*/
