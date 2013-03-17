@@ -83,7 +83,9 @@ public class TransactionClient {
 	 */
 	public void SendMessagetoAllServers(String messageType,HashMap<String,String> propValue)
 	{
+		//Create an executorservice
 		ExecutorService es = Executors.newCachedThreadPool();
+		//initialize Variables
 		ackCount = 0;
 		responseSet = new ArrayList<MessageContent>();
 		for (int i = 0; i < Settings.serverIpList.length; i++) 
@@ -91,8 +93,7 @@ public class TransactionClient {
 			Socket socket;
 			InetSocketAddress serverAddress = Settings.serverIpList[i];
 			String message = "";
-			try {
-
+			try {//Creates a socket connection and a message depending on the messagetype, writes to log as well
 				socket = new Socket(serverAddress.getHostName(),serverAddress.getPort());
 				if (messageType.equals("PREPARE"))
 				{
@@ -111,14 +112,16 @@ public class TransactionClient {
 					System.err.println("client" + id + "NOONE DARES COMETH" + messageType);
 				}
 				MessageSender newThread = new MessageSender(socket,message);
+				//spawns a new thread and executes it
 				es.execute(newThread);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		
 		es.shutdown();
-		try {
+		try {//waits for termination of all threads to continue
 			es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 		} catch (InterruptedException e) {
 			//Here be dragons!
@@ -153,11 +156,12 @@ public class TransactionClient {
 				toTransactionServer.println(message);
 				toTransactionServer.flush();
 				fromServer = fromTransactionServer.readLine();
+				//gets the response from Server, it can be null(Applyphase)
 				if (fromServer != null)
 				{
 					MessageContent parsedResponse = Messages.parse(fromServer);
 					synchronized(responseSet)
-					{
+					{//update the responseset and ackcount based on a log
 						InternalMessageLog.WriteLog("client "+id, " received " + parsedResponse.toString());
 						if (parsedResponse.status)
 							ackCount++;
@@ -257,6 +261,7 @@ public class TransactionClient {
 		if (ackCount < D/2)
 		{
 			try {
+				//RETRY ACCEPT IF MAJORITY IS NOT REACHED
 				Thread.sleep((long) (Math.random()*100));
 				propNum  = nextPropNumber(responseSet,propNum+1);
 				InternalMessageLog.WriteLog("client"+id, "FAILED AT ACCEPT, RESTARTING WITH PROPNUM " +  propNum);
@@ -270,7 +275,7 @@ public class TransactionClient {
 
 		SendMessagetoAllServers("APPLY", propValue);
 		if (propValue.equals(propVal))
-		{
+		{//IF THE PROPOVALUE FROM THE SERVER EQUALS TO OUR PROPVAL WE WON!
 			InternalMessageLog.WriteLog("client"+id, "COMMITTED :) " +propValue);
 			return true;
 		}else
