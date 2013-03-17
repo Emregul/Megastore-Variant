@@ -144,6 +144,7 @@ public class TransactionService
 				//position p
 				long p = log.getPosition();
 				WriteLogReadResult result = log.read(p);
+				System.out.println("log position"  + p);
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
 						InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values));
