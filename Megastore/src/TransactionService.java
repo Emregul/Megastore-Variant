@@ -31,16 +31,20 @@ import java.util.*;
 public class TransactionService 
 {	
 	private WriteLog log;
+	private long id;
 	private int listenPort;
 	
-	public TransactionService(int listenPort)
+	public TransactionService(long id,int listenPort)
 	{
 		this.listenPort = listenPort;
+		this.id = id;
 		new ConnectionHandler().start();
 		/*Creates a log for an entity key=1*/
 		try {
-			log = new WriteLog("One");
+			log = new WriteLog("log" +id);
 			System.out.println("adas");
+			log.erase();
+			log = new WriteLog("log" +id);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -106,14 +110,15 @@ public class TransactionService
 			try {
 				message = fromTransactionClient.readLine();
 				MessageContent parsedMessage = Messages.parse(message);
+				InternalMessageLog.WriteLog("server"+ id, " received " + parsedMessage.toString() );
 				if(parsedMessage.messageType.equals("PREPARE")) {
 					receive_prepare(parsedMessage.cid, parsedMessage.propositionNumber,toTransactionClient);
 				}
 				else if(parsedMessage.messageType.equals("ACCEPT")) {
-					receive_accept(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.vValues,toTransactionClient);
+					receive_accept(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.propositionValues,toTransactionClient);
 				}
 				else if(parsedMessage.messageType.equals("APPLY")) {
-					receive_apply(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.vValues);
+					receive_apply(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.propositionValues);
 				}
 				else
 					System.out.println("Error: Unrecognized message format received from client");
@@ -139,8 +144,10 @@ public class TransactionService
 				//position p
 				long p = log.getPosition();
 				WriteLogReadResult result = log.read(p);
+				System.out.println("log position"  + p);
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
+						InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values));
 						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values);
 						toTransactionClient.println(message);
 						toTransactionClient.flush();
@@ -148,6 +155,7 @@ public class TransactionService
 					}
 				}
 				else {
+					InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber));
 					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber);
 					toTransactionClient.println(message);
 					toTransactionClient.flush();
@@ -171,13 +179,17 @@ public class TransactionService
 	public synchronized void receive_accept(int cid, long propNum, HashMap<String,String> value, PrintWriter toTransactionClient) {
 		try {
 			String message = new String();
+			System.out.println(propNum);
 			if(log.checkAndWrite(log.getPosition(), propNum, value)) {
 				//success
 				message = Messages.sendAcceptFromServiceToClient(cid,true);
+				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,true));
+
 			}
 			else {
 				//failure
 				message = Messages.sendAcceptFromServiceToClient(cid,false);
+				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,false));
 			}
 			//send message
 			toTransactionClient.println(message);
@@ -202,7 +214,10 @@ public class TransactionService
 	}
 	public static void main(String[] args) 
 	{
-		TransactionService service1 = new TransactionService(11115);
+		InternalMessageLog.init();
+		TransactionService service1 = new TransactionService(1,11111);
+		TransactionService service2 = new TransactionService(2,11112);
+		TransactionService service3 = new TransactionService(3,11113);
 	}
 
 }

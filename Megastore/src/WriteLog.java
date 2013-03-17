@@ -104,6 +104,12 @@ public class WriteLog {
 	 */
 	public WriteLog(String key) throws IOException{
 		config = HBaseConfiguration.create();
+		config.clear();
+		config.set("hbase.zookeeper.quorum", "ec2-54-224-51-107.compute-1.amazonaws.com");
+		config.set("hbase.zookeeper.property.clientPort","2181");
+		config.set("hbase.master", "ec2-54-224-51-107.compute-1.amazonaws.com:60000");
+		
+		
 		HBaseAdmin hbase = new HBaseAdmin(config);
 		
 		HTableDescriptor desc = new HTableDescriptor(key);
@@ -126,8 +132,8 @@ public class WriteLog {
 		}catch(org.apache.hadoop.hbase.TableExistsException exc){
 			/*Do nothing*/
 		}
-		
 		table = new HTable(config, key);
+		tableName = key;
 	}
 	
 	/**
@@ -135,6 +141,17 @@ public class WriteLog {
 	 */
 	public long getPosition() {
 		return position;
+	}
+	
+	/**
+	 * Erases the log
+	 * 
+	 * @throws IOException
+	 */
+	public void erase() throws IOException{
+		HBaseAdmin hbase = new HBaseAdmin(config);
+		hbase.disableTable(tableName);
+		hbase.deleteTable(tableName);
 	}
 	
 	/**
@@ -304,5 +321,6 @@ public class WriteLog {
 	final private String columnFamilyValues = "values";
 	final private String columnBalloutNumber = "balloutNumber";
 	final private String columnNextBal = "nextBal";
+	private String tableName;
 }
 	

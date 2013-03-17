@@ -107,6 +107,10 @@ public class Database {
 	 */
 	public Database() throws IOException{
 		config = HBaseConfiguration.create();
+		config.clear();
+		config.set("hbase.zookeeper.quorum", "ec2-54-224-51-107.compute-1.amazonaws.com");
+		config.set("hbase.zookeeper.property.clientPort","2181");
+		config.set("hbase.master", "ec2-54-224-51-107.compute-1.amazonaws.com:60000");
 		HBaseAdmin hbase = new HBaseAdmin(config);
 		
 		HTableDescriptor desc = new HTableDescriptor(tableName);

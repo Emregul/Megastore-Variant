@@ -1,21 +1,25 @@
 import java.io.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ApplicationLayer {
+public class ApplicationLayer extends Thread{
 
 	public TransactionClient Client;
+	public String filename;
 	
 	/**
 	 * Constructor
 	 */
-	public ApplicationLayer() {
-		Client = new TransactionClient();
+	public ApplicationLayer(String filename,long id) {
+		Client = new TransactionClient(id);
+		this.filename= filename;
 	}
 	
 	/**
 	 * run - to read a file for execution sequence
 	 * @param filename
 	 */
-	public void run(String filename) {
+	public void run() {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(filename));
 			String line;
@@ -26,7 +30,7 @@ public class ApplicationLayer {
 			}
 			in.close();
 		} 
-        catch (Exception e) {
+        catch (IOException e) {
 			System.err.println("File input error");
 		}
 
@@ -102,9 +106,12 @@ public class ApplicationLayer {
 		}
 	}
 	public static void main(String[] args) {
-		ApplicationLayer app1 = new ApplicationLayer();
-		System.out.println("Hello");
-		String inputfile1 = "/Users/Vivek/Megastore-Variant/Megastore/src/App1.txt";
-		app1.run(inputfile1);
+		ApplicationLayer app1 = new ApplicationLayer("App1.txt",1);
+		ApplicationLayer app2 = new ApplicationLayer("App2.txt",2);
+		ExecutorService es = Executors.newCachedThreadPool();
+		InternalMessageLog.init();
+		InternalMessageLog.WriteLog("======================", "======================");
+		es.execute(app1);
+		es.execute(app2);
 	}
 }
