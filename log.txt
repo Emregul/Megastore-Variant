@@ -1,0 +1,706 @@
+====================== ======================
+client 2  sent PREPARE,1,0
+client 1  sent PREPARE,1,0
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1,Y=12,X=28
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=12, X=28}
+
+client 1  sent PREPARE,2,0
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,2,0
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1,Y=12,X=28
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=12, X=28}
+
+client 1  sent PREPARE,3,0
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,3,0
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1,Y=12,X=28
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=12, X=28}
+
+client1  sent ACCEPT,1,0,Y=12,X=28
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server3  sent PREPARE,FAILURE,-1,-1
+server1  sent ACCEPT,-1,true
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,2,0,Y=12,X=28
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 1
+client 2  sent PREPARE,1,1
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,3,0,Y=12,X=28
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,0,Y=12,X=28
+server3  sent ACCEPT,-1,true
+client 2  received  type: PREPARE_SUCCESS propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {Y=12, X=28}
+
+client 2  sent PREPARE,2,1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent APPLY,1,0,Y=12,X=28
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,0,Y=12,X=28
+client1  sent APPLY,2,0,Y=12,X=28
+client 2  received  type: PREPARE_SUCCESS propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {Y=12, X=28}
+
+client 2  sent PREPARE,3,1
+server2  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,0,Y=12,X=28
+client1  sent APPLY,3,0,Y=12,X=28
+client 2  received  type: PREPARE_SUCCESS propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {Y=12, X=28}
+
+client2  sent ACCEPT,1,1,Y=12,X=28
+server3  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server1  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server1  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,1,Y=12,X=28
+server2  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+client1 ABORTED :(
+client 1  sent PREPARE,1,0
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,1,Y=12,X=28
+server3  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1,Y=25,X=10
+server3  sent ACCEPT,-1,false
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client 1  sent PREPARE,2,0
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 2
+client 2  sent PREPARE,1,2
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1,Y=25,X=10
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client 1  sent PREPARE,3,0
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client 2  sent PREPARE,2,2
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1,Y=25,X=10
+server2  sent PREPARE,SUCCESS,-1,-1,Y=25,X=10
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client1  sent ACCEPT,1,0,Y=25,X=10
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client 2  sent PREPARE,3,2
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent ACCEPT,-1,false
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,2,0,Y=25,X=10
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server2  sent ACCEPT,-1,false
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,3,0,Y=25,X=10
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1,Y=25,X=10
+server3  sent ACCEPT,-1,false
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client2  sent ACCEPT,1,2,Y=25,X=10
+server1  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 1
+client 1  sent PREPARE,1,1
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,2,Y=25,X=10
+server2  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server1  sent PREPARE,FAILURE,-1,2
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 2 propVal: {} vVal: {}
+
+client 1  sent PREPARE,2,1
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,2,Y=25,X=10
+server3  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server2  sent PREPARE,FAILURE,-1,2
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 2 propVal: {} vVal: {}
+
+client 1  sent PREPARE,3,1
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent ACCEPT,-1,true
+server3  sent PREPARE,FAILURE,-1,2
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,1,2,Y=25,X=10
+server1  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 2 propVal: {} vVal: {}
+
+client1 FAILED AT PREPARE, RESTARTING WITH PROPNUM 2
+client 1  sent PREPARE,1,2
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,2,2,Y=25,X=10
+server2  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1,Y=5
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=5}
+
+client 1  sent PREPARE,2,2
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,3,2,Y=25,X=10
+server3  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1,Y=5
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=5}
+
+client 1  sent PREPARE,3,2
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 ABORTED :(
+client 2  sent PREPARE,1,2
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,FAILURE,-1,-1
+server3  sent PREPARE,SUCCESS,-1,-1,Y=5
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,2,2
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=5}
+
+client1  sent ACCEPT,1,2,Y=5
+server1  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server2  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,3,2
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent ACCEPT,-1,true
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,2,2,Y=5
+server2  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server3  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 3
+client 2  sent PREPARE,1,3
+server1  received  type: PREPARE propNum: 3 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,3,2,Y=5
+server3  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,2,Y=5
+server3  sent ACCEPT,-1,true
+client 2  received  type: PREPARE_SUCCESS propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {Y=5}
+
+client 2  sent PREPARE,2,3
+server2  received  type: PREPARE propNum: 3 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent APPLY,1,2,Y=5
+server1  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,2,Y=5
+client 2  received  type: PREPARE_SUCCESS propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {Y=5}
+
+client 2  sent PREPARE,3,3
+server3  received  type: PREPARE propNum: 3 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent APPLY,2,2,Y=5
+server2  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,2,Y=5
+client 2  received  type: PREPARE_SUCCESS propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {Y=5}
+
+client2  sent ACCEPT,1,3,Y=5
+server1  received  type: ACCEPT propNum: 3 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+client1  sent APPLY,3,2,Y=5
+server3  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server1  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,3,Y=5
+server2  received  type: ACCEPT propNum: 3 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+client1 ABORTED :(
+server2  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,3,Y=5
+server3  received  type: ACCEPT propNum: 3 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server3  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 4
+client 2  sent PREPARE,1,4
+server1  received  type: PREPARE propNum: 4 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=10}
+
+client 2  sent PREPARE,2,4
+server2  received  type: PREPARE propNum: 4 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=10}
+
+client 2  sent PREPARE,3,4
+server3  received  type: PREPARE propNum: 4 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {Y=10}
+
+client2  sent ACCEPT,1,4,Y=10
+server1  received  type: ACCEPT propNum: 4 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server1  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,4,Y=10
+server2  received  type: ACCEPT propNum: 4 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,4,Y=10
+server3  received  type: ACCEPT propNum: 4 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server3  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,1,4,Y=10
+server1  received  type: APPLY propNum: 4 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+client2  sent APPLY,2,4,Y=10
+server2  received  type: APPLY propNum: 4 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+client2  sent APPLY,3,4,Y=10
+server3  received  type: APPLY propNum: 4 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+client2 ABORTED :(
+====================== ======================
+client 1  sent PREPARE,1,0
+client 2  sent PREPARE,1,0
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  sent PREPARE,2,0
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,2,0
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  sent PREPARE,3,0
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,3,0
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,1,0,Y=25,X=10
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server3  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent ACCEPT,-1,true
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 1
+client 2  sent PREPARE,1,1
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,2,0,Y=25,X=10
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server2  sent ACCEPT,-1,true
+server1  sent PREPARE,SUCCESS,-1,0,Y=25,X=10
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,3,0,Y=25,X=10
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+client 2  received  type: PREPARE_SUCCESS propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client 2  sent PREPARE,2,1
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent ACCEPT,-1,true
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent APPLY,1,0,Y=25,X=10
+server1  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client 2  sent PREPARE,3,1
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent APPLY,2,0,Y=25,X=10
+server2  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {Y=25, X=10}
+
+client2  sent ACCEPT,1,1,Y=25,X=10
+server1  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+client1  sent APPLY,3,0,Y=25,X=10
+server3  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server1  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,1,Y=25,X=10
+server2  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+server2  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,1,Y=25,X=10
+server3  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {}
+
+client1 COMMITTED :) {Y=25, X=10}
+client 1  sent PREPARE,1,0
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 2
+client 2  sent PREPARE,1,2
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  sent PREPARE,2,0
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,2,2
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  sent PREPARE,3,0
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,3,2
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,1,0,Y=10
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server1  sent ACCEPT,-1,false
+server3  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,2,0,Y=10
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,1,2,Y=12,X=28
+server1  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server2  sent ACCEPT,-1,false
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,3,0,Y=10
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server1  sent ACCEPT,-1,true
+server3  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,2,Y=12,X=28
+server2  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,2,Y=12,X=28
+server3  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+client1 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 1
+client 1  sent PREPARE,1,1
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,1,2,Y=12,X=28
+server1  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server1  sent PREPARE,FAILURE,-1,2
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 2 propVal: {} vVal: {}
+
+client 1  sent PREPARE,2,1
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,2,2,Y=12,X=28
+server2  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+server2  sent PREPARE,FAILURE,-1,2
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 2 propVal: {} vVal: {}
+
+client 1  sent PREPARE,3,1
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,FAILURE,-1,2
+client2  sent APPLY,3,2,Y=12,X=28
+server3  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {}
+
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 2 propVal: {} vVal: {}
+
+client1 FAILED AT PREPARE, RESTARTING WITH PROPNUM 2
+client 1  sent PREPARE,1,2
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 COMMITTED :) {Y=12, X=28}
+client 2  sent PREPARE,1,2
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  sent PREPARE,2,2
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,2,2
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  sent PREPARE,3,2
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,FAILURE,-1,-1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,3,2
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1
+server3  sent PREPARE,FAILURE,-1,-1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,1,2,Y=10
+server1  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server1  sent ACCEPT,-1,true
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,2,2,Y=10
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 3
+client 2  sent PREPARE,1,3
+server2  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server1  received  type: PREPARE propNum: 3 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent ACCEPT,3,2,Y=10
+server3  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server3  sent ACCEPT,-1,true
+server1  sent PREPARE,SUCCESS,-1,2,Y=10
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client1  sent APPLY,1,2,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {Y=10}
+
+client 2  sent PREPARE,2,3
+server1  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server2  received  type: PREPARE propNum: 3 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,2,Y=10
+client1  sent APPLY,2,2,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {Y=10}
+
+client 2  sent PREPARE,3,3
+server2  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server3  received  type: PREPARE propNum: 3 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,2,Y=10
+client1  sent APPLY,3,2,Y=10
+server3  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+client 2  received  type: PREPARE_SUCCESS propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {Y=10}
+
+client2  sent ACCEPT,1,3,Y=10
+server1  received  type: ACCEPT propNum: 3 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server1  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,3,Y=10
+server2  received  type: ACCEPT propNum: 3 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server2  sent ACCEPT,-1,false
+client1 COMMITTED :) {Y=10}
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,3,Y=10
+server3  received  type: ACCEPT propNum: 3 vBalloutNumber: -1 propVal: {Y=10} vVal: {}
+
+server3  sent ACCEPT,-1,false
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 4
+client 2  sent PREPARE,1,4
+server1  received  type: PREPARE propNum: 4 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server1  sent PREPARE,SUCCESS,-1,-1
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,2,4
+server2  received  type: PREPARE propNum: 4 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server2  sent PREPARE,SUCCESS,-1,-1
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client 2  sent PREPARE,3,4
+server3  received  type: PREPARE propNum: 4 vBalloutNumber: -1 propVal: {} vVal: {}
+
+server3  sent PREPARE,SUCCESS,-1,-1
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,1,4,Y=5
+server1  received  type: ACCEPT propNum: 4 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server1  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,2,4,Y=5
+server2  received  type: ACCEPT propNum: 4 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server2  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent ACCEPT,3,4,Y=5
+server3  received  type: ACCEPT propNum: 4 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+server3  sent ACCEPT,-1,true
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {}
+
+client2  sent APPLY,1,4,Y=5
+server1  received  type: APPLY propNum: 4 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+client2  sent APPLY,2,4,Y=5
+server2  received  type: APPLY propNum: 4 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+client2  sent APPLY,3,4,Y=5
+server3  received  type: APPLY propNum: 4 vBalloutNumber: -1 propVal: {Y=5} vVal: {}
+
+client2 COMMITTED :) {Y=5}
