@@ -2,23 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/commons-configuration-1.8.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/hadoop-0.20.2-core.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/hadoop-core-1.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/hbase-0.90.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/protobuf-java-2.2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Emre/Documents/GitHub/Megastore-Variant/Megastore/zookeeper-3.3.1.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/commons-configuration-1.8.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/hadoop-0.20.2-core.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/hadoop-core-1.0.0.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/hbase-0.90.2.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/protobuf-java-2.2.0.jar"/>
-	<classpathentry kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/zookeeper-3.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/commons-configuration-1.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/commons-lang-2.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/hadoop-0.20.2-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/hadoop-core-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/log4j-1.2.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/protobuf-java-2.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Megastore-Variant/Megastore/zookeeper-3.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/Vivek/Downloads/hbase-0.94.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
