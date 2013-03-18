@@ -112,13 +112,18 @@ public class TransactionService
 				MessageContent parsedMessage = Messages.parse(message);
 				InternalMessageLog.WriteLog("server"+ id, " received " + parsedMessage.toString() );
 				if(parsedMessage.messageType.equals("PREPARE")) {
-					receive_prepare(parsedMessage.cid, parsedMessage.propositionNumber,toTransactionClient);
+					receive_prepare(parsedMessage.cid, parsedMessage.propositionNumber,toTransactionClient, parsedMessage.logPosition);
 				}
 				else if(parsedMessage.messageType.equals("ACCEPT")) {
-					receive_accept(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.propositionValues,toTransactionClient);
+					receive_accept(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.propositionValues,toTransactionClient, parsedMessage.logPosition);
 				}
 				else if(parsedMessage.messageType.equals("APPLY")) {
-					receive_apply(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.propositionValues);
+					receive_apply(parsedMessage.cid, parsedMessage.propositionNumber,parsedMessage.propositionValues,parsedMessage.logPosition);
+				}
+				else if(parsedMessage.messageType.equals("POSITION")) {
+					String message = Messages.sendGetPositionFromServiceToClient((int)id, String.valueOf(id), log.getPosition());
+					toTransactionClient.println(message);
+					toTransactionClient.flush();
 				}
 				else
 					System.out.println("Error: Unrecognized message format received from client");
@@ -137,26 +142,26 @@ public class TransactionService
 		}
 	}
 	
-	public synchronized void receive_prepare(int cid, long propNum, PrintWriter toTransactionClient) {
+	public synchronized void receive_prepare(int cid, long propNum, PrintWriter toTransactionClient, long position) {
 		boolean keepTrying = true;
 		while(keepTrying) {
 			try {
 				//position p
-				long p = log.getPosition();
+				long p = position;
 				WriteLogReadResult result = log.read(p);
 				System.out.println("log position"  + p);
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
-						InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values));
-						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, result.values);
+						InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, String.valueOf(id), position, result.values));
+						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, String.valueOf(id), position, result.values);
 						toTransactionClient.println(message);
 						toTransactionClient.flush();
 						keepTrying = false;
 					}
 				}
 				else {
-					InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber));
-					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber);
+					InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber, String.valueOf(id), position));
+					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber, String.valueOf(id), position);
 					toTransactionClient.println(message);
 					toTransactionClient.flush();
 					keepTrying = false;
@@ -176,20 +181,20 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public synchronized void receive_accept(int cid, long propNum, HashMap<String,String> value, PrintWriter toTransactionClient) {
+	public synchronized void receive_accept(int cid, long propNum, HashMap<String,String> value, PrintWriter toTransactionClient, long position) {
 		try {
 			String message = new String();
 			System.out.println(propNum);
-			if(log.checkAndWrite(log.getPosition(), propNum, value)) {
+			if(log.checkAndWrite(position, propNum, value)) {
 				//success
-				message = Messages.sendAcceptFromServiceToClient(cid,true);
-				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,true));
+				message = Messages.sendAcceptFromServiceToClient(cid,true,String.valueOf(id), position);
+				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,true, String.valueOf(id), position));
 
 			}
 			else {
 				//failure
-				message = Messages.sendAcceptFromServiceToClient(cid,false);
-				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,false));
+				message = Messages.sendAcceptFromServiceToClient(cid,false,String.valueOf(id),position);
+				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,false,String.valueOf(id),position));
 			}
 			//send message
 			toTransactionClient.println(message);
@@ -205,9 +210,15 @@ public class TransactionService
 	 * @param propNum
 	 * @param value
 	 */
-	public synchronized void receive_apply(int cid, long propNum, HashMap<String,String> value) {
+	public synchronized void receive_apply(int cid, long propNum, HashMap<String,String> value, long position) {
 		try {
-			log.write(log.getPosition(),propNum,value);
+			if(position == log.getPosition()) {
+			log.write(position,propNum,value);
+			InternalMessageLog.WriteLog("Server" +id, "Client:"+ cid + " wrote to positon:" + position + " Now new log position="+log.getPosition());
+			}
+			else if(position > log.getPosition()){
+				InternalMessageLog.WriteLog("server" + id, "Client:" + cid + " is trying to write to a future position " + position +"BUG");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

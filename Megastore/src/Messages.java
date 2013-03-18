@@ -62,10 +62,10 @@ class MessageContent{
 	public long vBalloutNumber;
 	public HashMap<String,String> vValues;
 	public boolean status;
-	//{"PREPARE", "ACCEPT", "APPLY", "PREPARE_SUCCESS", "PREPARE_FAILURE"}
+	//{"PREPARE", "ACCEPT", "APPLY", "PREPARE_SUCCESS", "PREPARE_FAILURE", "POSITION"}
 	public String messageType;
 	public String sender;
-	public int logPosition;
+	public long logPosition;
 }
 
 /**
@@ -118,6 +118,19 @@ public class Messages {
 			content = Messages.getContent(message);
 			content.print();
 		}
+		
+		if(Messages.isSendGetPositionFromClientToService(message)){
+			System.out.println("Get Position from Client to Service");
+			content = Messages.getContent(message);
+			content.print();
+		}
+		
+		if(Messages.isSendGetPositionFromServiceToClient(message)){
+			System.out.println("Get Position from Service to Client");
+			content = Messages.getContent(message);
+			content.print();
+		}
+		
 		return content;
 	}
 	
@@ -174,6 +187,14 @@ public class Messages {
 				logPosition);
 		System.out.println("message = "+message);
 		parse(message);
+		
+		message = Messages.sendGetPositionFromClientToService(datacenter, sender);
+		System.out.println("message = "+message);
+		parse(message);
+
+		message = Messages.sendGetPositionFromServiceToClient(datacenter, sender, logPosition);
+		System.out.println("message = "+message);
+		parse(message);
 	}
 	
 	/*client => service*/
@@ -189,10 +210,34 @@ public class Messages {
 	 * @return the message
 	 */
 	static String sendPrepareFromClientToService(int datacenter, long propositionNumber, 
-			String sender, int logPosition){
+			String sender, long logPosition){
 		
 		return "PREPARE,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","
 				+sender+","+String.valueOf(logPosition);
+	}
+	
+	/**
+	 * Creates message asking for the current log position
+	 * 
+	 * @param datacenter
+	 * @param sender
+	 * @return message
+	 */
+	static String sendGetPositionFromClientToService(int datacenter, String sender){
+		return "POSITION,"+String.valueOf(datacenter)+","+sender;
+	}
+	
+	/**
+	 * Creates message asking for the current log position
+	 * 
+	 * @param datacenter
+	 * @param sender
+	 * @param logPosition
+	 * @return message
+	 */
+	static String sendGetPositionFromServiceToClient(int datacenter, String sender, 
+			long logPosition){
+		return "POSITION,"+String.valueOf(datacenter)+","+sender+","+String.valueOf(logPosition);
 	}
 	
 	/**
@@ -206,7 +251,7 @@ public class Messages {
 	 * @return the message
 	 */
 	static String sendAcceptFromClientToService(int datacenter, long propositionNumber,
-			String sender, int logPosition, HashMap<String,String> propositionValues){
+			String sender, long logPosition, HashMap<String,String> propositionValues){
 		
 		String message = "ACCEPT,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)
 				+","+sender+","+String.valueOf(logPosition);
@@ -229,7 +274,7 @@ public class Messages {
 	 * @return the message
 	 */
 	static String sendApplyFromClientToService(int datacenter, long propositionNumber, 
-			String sender, int logPosition, HashMap<String,String> propositionValues){
+			String sender, long logPosition, HashMap<String,String> propositionValues){
 		String message = "APPLY,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)
 				+","+sender+","+String.valueOf(logPosition);
 		
@@ -253,7 +298,7 @@ public class Messages {
 	 * @return the message
 	 */
 	static String sendPrepareSuccessFromServiceToClient(int cid, long vBalloutNumber, 
-			String sender, int logPosition, HashMap<String,String> vValues){
+			String sender, long logPosition, HashMap<String,String> vValues){
 		
 		String message =  "PREPARE,SUCCESS,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber)
 				+","+sender+","+String.valueOf(logPosition);
@@ -275,7 +320,7 @@ public class Messages {
 	 * @return the message
 	 */
 	static String sendPrepareFailureFromServiceToClient(int cid, long vBalloutNumber,
-			String sender, int logPosition){
+			String sender, long logPosition){
 		
 		return "PREPARE,FAILURE,"+String.valueOf(cid)+","+String.valueOf(vBalloutNumber)
 				+","+sender+","+String.valueOf(logPosition);
@@ -290,11 +335,13 @@ public class Messages {
 	 * @return the message
 	 */
 	static String sendAcceptFromServiceToClient(int cid, boolean status, String sender,
-			int logPosition){
+			long logPosition){
 		
 		return "ACCEPT,"+String.valueOf(cid)+","+String.valueOf(status)+","+sender+
 				","+String.valueOf(logPosition);
 	}
+	
+	
 	
 	/**
 	 * Checks if the message is send(d,PREPARE,propNum)
@@ -316,6 +363,50 @@ public class Messages {
 			return true;
 		}
 		else{
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if a message is an ask for the log position from client to service
+	 * 
+	 * 		return "POSITION,"+String.valueOf(datacenter)+","+sender;
+	 * 
+	 * @param message
+	 * @return
+	 */
+	static boolean isSendGetPositionFromClientToService(String message){
+		String[] fields = message.split(",");
+		
+		if(fields.length != 3){
+			return false;
+		}
+		
+		if(fields[0].equals("POSITION")){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if a message is a log position communication from service to client
+	 * 
+	 * return "POSITION,"+String.valueOf(datacenter)+","+sender+","+String.valueOf(logPosition);
+	 * 
+	 * @param message
+	 * @return
+	 */
+	static boolean isSendGetPositionFromServiceToClient(String message){
+String[] fields = message.split(",");
+		
+		if(fields.length != 4){
+			return false;
+		}
+		
+		if(fields[0].equals("POSITION")){
+			return true;
+		}else{
 			return false;
 		}
 	}
@@ -459,7 +550,23 @@ public class Messages {
 			content.propositionNumber = Long.parseLong(fields[2]);
 			content.messageType = "PREPARE";
 			content.sender = fields[3];
-			content.logPosition = Integer.parseInt(fields[4]); 
+			content.logPosition = Long.parseLong(fields[4]); 
+		}
+		
+		//return "POSITION,"+String.valueOf(datacenter)+","+sender;
+		if(Messages.isSendGetPositionFromClientToService(message)){
+			content.datacenter = Integer.parseInt(fields[1]);
+			content.sender = fields[2];
+			content.messageType = "POSITION";
+		}
+		
+		//return "POSITION,"+String.valueOf(datacenter)+","+sender+","+String.valueOf(logPosition);
+		if(Messages.isSendGetPositionFromServiceToClient(message)){
+			content.datacenter = Integer.parseInt(fields[1]);
+			content.sender = fields[2];
+			content.logPosition = Long.parseLong(fields[3]);
+			content.messageType = "POSITION";
+
 		}
 		
 		//String message = "ACCEPT,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)
@@ -469,7 +576,7 @@ public class Messages {
 			content.propositionNumber = Long.parseLong(fields[2]);
 			content.messageType ="ACCEPT";
 			content.sender = fields[3];
-			content.logPosition = Integer.parseInt(fields[4]);
+			content.logPosition = Long.parseLong(fields[4]);
 //			System.out.println("dude" + content.propositionNumber);
 			for(int f = 5; f < fields.length; f++){
 				varValue = fields[f].split("=");
@@ -485,7 +592,7 @@ public class Messages {
 			content.propositionNumber = Long.parseLong(fields[2]);
 			content.messageType = "APPLY";
 			content.sender = fields[3];
-			content.logPosition = Integer.parseInt(fields[4]);
+			content.logPosition = Long.parseLong(fields[4]);
 			
 			for(int f = 5; f < fields.length; f++){
 				varValue = fields[f].split("=");
@@ -501,7 +608,7 @@ public class Messages {
 			content.messageType = "PREPARE_SUCCESS";
 			content.status=true;
 			content.sender = fields[4];
-			content.logPosition = Integer.parseInt(fields[5]);
+			content.logPosition = Long.parseLong(fields[5]);
 			
 			for(int f = 6; f < fields.length; f++){
 				varValue = fields[f].split("=");
@@ -517,7 +624,7 @@ public class Messages {
 			content.messageType = "PREPARE_FAILURE";
 			content.status = false;
 			content.sender = fields[4];
-			content.logPosition = Integer.parseInt(fields[5]);
+			content.logPosition = Long.parseLong(fields[5]);
 		}
 		
 		//return "ACCEPT,"+String.valueOf(cid)+","+String.valueOf(status)+","+sender+
@@ -527,7 +634,7 @@ public class Messages {
 			content.status = Boolean.parseBoolean(fields[2]);
 			content.messageType = "ACCEPT";
 			content.sender = fields[3];
-			content.logPosition = Integer.parseInt(fields[4]);
+			content.logPosition = Long.parseLong(fields[4]);
 		}
 		
 		return content;

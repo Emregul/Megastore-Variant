@@ -34,6 +34,8 @@ public class TransactionClient {
 	private long id;
 	private ArrayList<MessageContent> responseSet;
 	private int ackCount;
+	private long logPosition;	//FIXME: How to set this?
+	private long olderlogPosition;
 
 	/**
 	 * Constructor
@@ -43,6 +45,8 @@ public class TransactionClient {
 		this.id = id;
 		ActiveTransactions = new HashMap<Long,Transaction>();
 		responseSet = new ArrayList<MessageContent>();
+		logPosition = 0;
+		olderlogPosition = -1;
 		try {
 			db = new Database();
 		} catch (IOException e) {
@@ -97,16 +101,16 @@ public class TransactionClient {
 				socket = new Socket(serverAddress.getHostName(),serverAddress.getPort());
 				if (messageType.equals("PREPARE"))
 				{
-					InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendPrepareFromClientToService(i+1, propNum));
-					message = Messages.sendPrepareFromClientToService(i+1, propNum);
+					InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendPrepareFromClientToService(i+1, propNum, String.valueOf(id), logPosition));
+					message = Messages.sendPrepareFromClientToService(i+1, propNum, String.valueOf(id), logPosition);
 				}else if (messageType.equals("APPLY"))
 				{
-					InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendApplyFromClientToService(i+1, propNum, propValue));
-					message = Messages.sendApplyFromClientToService(i+1, propNum, propValue);
+					InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendApplyFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue));
+					message = Messages.sendApplyFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue);
 				}else if (messageType.equals("ACCEPT"))
 				{
-					InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendAcceptFromClientToService(i+1, propNum, propValue));
-					message = Messages.sendAcceptFromClientToService(i+1, propNum, propValue);
+					InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendAcceptFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue));
+					message = Messages.sendAcceptFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue);
 				}else
 				{
 					System.err.println("client" + id + "NOONE DARES COMETH" + messageType);
@@ -176,7 +180,81 @@ public class TransactionClient {
 
 		}
 	}
+	
+	
+	
+	
+	public void SendMessagetoAllServersForLogPosition()
+	{
+		//Create an executorservice
+		ExecutorService es = Executors.newCachedThreadPool();
+		for (int i = 0; i < Settings.serverIpList.length; i++) 
+		{
+			Socket socket;
+			InetSocketAddress serverAddress = Settings.serverIpList[i];
+			String message = "";
+			try {//Creates a socket connection and a message depending on the messagetype, writes to log as well
+				socket = new Socket(serverAddress.getHostName(),serverAddress.getPort());
+				InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendGetPositionFromClientToService(i+1,String.valueOf(id)));
+				message = Messages.sendGetPositionFromClientToService(i+1,String.valueOf(id));
+				MessageSender2 newThread = new MessageSender2(socket,message);
+				//spawns a new thread and executes it
+				es.execute(newThread);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		es.shutdown();
+		try {//waits for termination of all threads to continue
+			es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (InterruptedException e) {
+			//Here be dragons!
+		}
+	}
+	public class MessageSender2 extends Thread
+	{//Thread that opens the socket connection and sends the message
+		private Socket socket;
+		private PrintWriter toTransactionServer;
+		private BufferedReader fromTransactionServer;
+		private String message;
+		private String fromServer;
 
+		public MessageSender2(Socket socket, String message)
+		{
+			this.socket = socket;
+			this.message = message;
+
+			try {
+				toTransactionServer = new PrintWriter (new OutputStreamWriter(socket.getOutputStream()));
+				fromTransactionServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		public void run()
+		{
+			try {
+				//Parse given message send it to the server, read response from server and close the socket
+				toTransactionServer.println(message);
+				toTransactionServer.flush();
+				fromServer = fromTransactionServer.readLine();
+				//gets the response from Server, it can be null(Applyphase)
+				if (fromServer != null)
+				{
+					MessageContent parsedResponse = Messages.parse(fromServer);
+					logPosition = parsedResponse.logPosition;
+				}
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
 
 	/**
 	 * begin - a transaction with given transactionID
@@ -233,11 +311,16 @@ public class TransactionClient {
 
 		if(runPAXOSGivenPropNum(propVal)) {
 			ActiveTransactions.remove(transactionID);
+			//new change - Vivek
+			this.propNum = 0;
 			return true;
 		}
 		//promotion here
-		else 
+		else { 
+			//new change - Vivek
+			this.propNum = 0;
 			return false;
+		}
 	}
 	/**
 	 * abprt - Transaction
@@ -252,6 +335,14 @@ public class TransactionClient {
 	private boolean runPAXOSGivenPropNum(HashMap<String,String> propVal)
 	{
 		int D = Settings.serverIpList.length;
+		//Arlei and Vivek made this change in order to accomodate new position's propnum starting from 0
+		SendMessagetoAllServersForLogPosition();
+		InternalMessageLog.WriteLog("client:"+id, "Start of prepare received LogPosition:" + logPosition);
+		if(olderlogPosition < logPosition ){
+			propNum = 0;
+			olderlogPosition = logPosition;
+		}
+		
 		//PREPARE PHASE
 		List<MessageContent> responseSet = preparePhaseForPAXOS(propVal);
 		//ACCEPT PHASE
