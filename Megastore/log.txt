@@ -1,0 +1,594 @@
+====================== ======================
+client 1  sent POSITION,1,1
+client 2  sent POSITION,1,2
+client 2  sent POSITION,2,2
+client 1  sent POSITION,2,1
+client 2  sent POSITION,3,2
+client 1  sent POSITION,3,1
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 1
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 2
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 2
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 3
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 3
+
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 1
+
+client:1 Start of prepare received LogPosition:0
+client:2 Start of prepare received LogPosition:0
+client 2  sent PREPARE,1,0,2,0
+client 1  sent PREPARE,1,0,1,0
+client 2  sent PREPARE,2,0,2,0
+client 1  sent PREPARE,2,0,1,0
+client 2  sent PREPARE,3,0,2,0
+client 1  sent PREPARE,3,0,1,0
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server3  sent PREPARE,SUCCESS,-1,-1,3,0
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server2  sent PREPARE,SUCCESS,-1,-1,2,0
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server1  sent PREPARE,SUCCESS,-1,-1,1,0
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+server3  sent PREPARE,FAILURE,-1,-1,3,0
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server2  sent PREPARE,FAILURE,-1,-1,2,0
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+client1 FAILED AT PREPARE, RESTARTING WITH PROPNUM 1
+client 1  sent PREPARE,1,1,1,0
+client 1  sent PREPARE,2,1,1,0
+client 1  sent PREPARE,3,1,1,0
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server1  sent PREPARE,FAILURE,-1,-1,1,0
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+client2  sent ACCEPT,1,0,2,0,Y=12,X=28
+client2  sent ACCEPT,2,0,2,0,Y=12,X=28
+client2  sent ACCEPT,3,0,2,0,Y=12,X=28
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=12, X=28} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server2  sent PREPARE,SUCCESS,-1,-1,2,0
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,-1,3,0
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent PREPARE,SUCCESS,-1,-1,1,0
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+client1  sent ACCEPT,1,1,1,0,Y=25,X=10
+client1  sent ACCEPT,2,1,1,0,Y=25,X=10
+client1  sent ACCEPT,3,1,1,0,Y=25,X=10
+server2  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server1  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server3  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server2  sent ACCEPT,-1,false,2,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent ACCEPT,-1,false,3,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent ACCEPT,-1,false,1,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+client2 FAILED AT ACCEPT, RESTARTING WITH PROPNUM 1
+client 2  sent PREPARE,1,1,2,0
+client 2  sent PREPARE,2,1,2,0
+client 2  sent PREPARE,3,1,2,0
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server2  sent ACCEPT,-1,true,2,0
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,0
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent ACCEPT,-1,true,1,0
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+client1  sent APPLY,1,1,1,0,Y=25,X=10
+client1  sent APPLY,2,1,1,0,Y=25,X=10
+client1  sent APPLY,3,1,1,0,Y=25,X=10
+server1  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server2  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server3  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server2  sent PREPARE,FAILURE,-1,1,2,0
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent PREPARE,FAILURE,-1,1,3,0
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent PREPARE,FAILURE,-1,1,1,0
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 2
+client 2  sent PREPARE,1,2,2,0
+client 2  sent PREPARE,2,2,2,0
+client 2  sent PREPARE,3,2,2,0
+server1  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: PREPARE propNum: 2 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+Server2 Client:-1 wrote to positon:0 Now new log position=1
+Server3 Client:-1 wrote to positon:0 Now new log position=1
+Server1 Client:-1 wrote to positon:0 Now new log position=1
+client1 COMMITTED :) {Y=25, X=10}
+client 1  sent POSITION,1,1
+client 1  sent POSITION,2,1
+client 1  sent POSITION,3,1
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 1
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 2
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 3
+
+client:1 Start of prepare received LogPosition:1
+client 1  sent PREPARE,1,0,1,1
+client 1  sent PREPARE,2,0,1,1
+client 1  sent PREPARE,3,0,1,1
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: 1
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: 2
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: 3
+
+server2  sent PREPARE,SUCCESS,-1,1,2,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 1 propVal: {} vVal: {Y=25, X=10} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,1,3,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 1 propVal: {} vVal: {Y=25, X=10} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent PREPARE,SUCCESS,-1,1,1,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 1 propVal: {} vVal: {Y=25, X=10} sender: 1 logPosition: 0 datacenter: -1
+
+client2  sent ACCEPT,1,2,2,0,Y=25,X=10
+client2  sent ACCEPT,2,2,2,0,Y=25,X=10
+client2  sent ACCEPT,3,2,2,0,Y=25,X=10
+server1  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server2  sent PREPARE,SUCCESS,-1,-1,2,1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,-1,3,1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+server1  sent PREPARE,SUCCESS,-1,-1,1,1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+client1  sent ACCEPT,1,0,1,1,Y=10
+client1  sent ACCEPT,2,0,1,1,Y=10
+client1  sent ACCEPT,3,0,1,1,Y=10
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 3
+
+server2  sent ACCEPT,-1,true,2,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent ACCEPT,-1,true,1,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+client2  sent APPLY,1,2,2,0,Y=25,X=10
+client2  sent APPLY,2,2,2,0,Y=25,X=10
+server1  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+client2  sent APPLY,3,2,2,0,Y=25,X=10
+server2  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: APPLY propNum: 2 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server2  sent ACCEPT,-1,true,2,1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+server1  sent ACCEPT,-1,true,1,1
+client2 ABORTED :(
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+client 2  sent POSITION,1,2
+client1  sent APPLY,1,0,1,1,Y=10
+client1  sent APPLY,2,0,1,1,Y=10
+client 2  sent POSITION,2,2
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 1
+
+server1  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 1
+
+client 2  sent POSITION,3,2
+client1  sent APPLY,3,0,1,1,Y=10
+server2  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 2
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 2
+
+server3  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 3
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 3
+
+client:2 Start of prepare received LogPosition:1
+client 2  sent PREPARE,1,0,2,1
+client 2  sent PREPARE,2,0,2,1
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+client 2  sent PREPARE,3,0,2,1
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+Server1 Client:-1 wrote to positon:1 Now new log position=2
+Server2 Client:-1 wrote to positon:1 Now new log position=2
+Server3 Client:-1 wrote to positon:1 Now new log position=2
+client1 COMMITTED :) {Y=10}
+server1  sent PREPARE,FAILURE,-1,0,1,1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+server2  sent PREPARE,FAILURE,-1,0,2,1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent PREPARE,FAILURE,-1,0,3,1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 1
+client 2  sent PREPARE,1,1,2,1
+client 2  sent PREPARE,2,1,2,1
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+client 2  sent PREPARE,3,1,2,1
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+server1  sent PREPARE,SUCCESS,-1,0,1,1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=10} sender: 1 logPosition: 1 datacenter: -1
+
+server2  sent PREPARE,SUCCESS,-1,0,2,1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=10} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,0,3,1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=10} sender: 3 logPosition: 1 datacenter: -1
+
+client2  sent ACCEPT,1,1,2,1,Y=10
+client2  sent ACCEPT,2,1,2,1,Y=10
+client2  sent ACCEPT,3,1,2,1,Y=10
+server1  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+server1  sent ACCEPT,-1,true,1,1
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+server2  sent ACCEPT,-1,true,2,1
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,1
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+client2  sent APPLY,1,1,2,1,Y=10
+client2  sent APPLY,2,1,2,1,Y=10
+server1  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+client2  sent APPLY,3,1,2,1,Y=10
+server2  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+client2 ABORTED :(
+====================== ======================
+client 1  sent POSITION,1,1
+client 2  sent POSITION,1,2
+client 1  sent POSITION,2,1
+client 2  sent POSITION,2,2
+client 1  sent POSITION,3,1
+client 2  sent POSITION,3,2
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 2
+
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 1
+
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 1
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 2
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 3
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 3
+
+client:1 Start of prepare received LogPosition:0
+client:2 Start of prepare received LogPosition:0
+client 1  sent PREPARE,1,0,1,0
+client 2  sent PREPARE,1,0,2,0
+client 1  sent PREPARE,2,0,1,0
+client 2  sent PREPARE,2,0,2,0
+client 1  sent PREPARE,3,0,1,0
+client 2  sent PREPARE,3,0,2,0
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server1  sent PREPARE,SUCCESS,-1,-1,1,0
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+server2  sent PREPARE,SUCCESS,-1,-1,2,0
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,-1,3,0
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+server1  sent PREPARE,FAILURE,-1,-1,1,0
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+server2  sent PREPARE,FAILURE,-1,-1,2,0
+client 1  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+client1  sent ACCEPT,1,0,1,0,Y=25,X=10
+client1  sent ACCEPT,2,0,1,0,Y=25,X=10
+client1  sent ACCEPT,3,0,1,0,Y=25,X=10
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server3  sent PREPARE,FAILURE,-1,-1,3,0
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 1
+client 2  sent PREPARE,1,1,2,0
+client 2  sent PREPARE,2,1,2,0
+client 2  sent PREPARE,3,1,2,0
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server1  sent ACCEPT,-1,true,1,0
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+server2  sent ACCEPT,-1,true,2,0
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,0
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+client1  sent APPLY,1,0,1,0,Y=25,X=10
+client1  sent APPLY,2,0,1,0,Y=25,X=10
+client1  sent APPLY,3,0,1,0,Y=25,X=10
+server1  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 1
+
+server2  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 2
+
+server3  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 1 logPosition: 0 datacenter: 3
+
+server1  sent PREPARE,SUCCESS,-1,0,1,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=25, X=10} sender: 1 logPosition: 0 datacenter: -1
+
+server2  sent PREPARE,SUCCESS,-1,0,2,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=25, X=10} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,0,3,0,Y=25,X=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=25, X=10} sender: 3 logPosition: 0 datacenter: -1
+
+client2  sent ACCEPT,1,1,2,0,Y=25,X=10
+client2  sent ACCEPT,2,1,2,0,Y=25,X=10
+client2  sent ACCEPT,3,1,2,0,Y=25,X=10
+server1  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+Server1 Client:-1 wrote to positon:0 Now new log position=1
+Server2 Client:-1 wrote to positon:0 Now new log position=1
+Server3 Client:-1 wrote to positon:0 Now new log position=1
+client1 COMMITTED :) {Y=25, X=10}
+client 1  sent POSITION,1,1
+client 1  sent POSITION,2,1
+client 1  sent POSITION,3,1
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 1
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 2
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: -1 datacenter: 3
+
+client:1 Start of prepare received LogPosition:1
+client 1  sent PREPARE,1,0,1,1
+client 1  sent PREPARE,2,0,1,1
+client 1  sent PREPARE,3,0,1,1
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: 1
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: 2
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: 3
+
+server1  sent ACCEPT,-1,true,1,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 0 datacenter: -1
+
+server2  sent ACCEPT,-1,true,2,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 0 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,0
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 0 datacenter: -1
+
+client2  sent APPLY,1,1,2,0,Y=25,X=10
+client2  sent APPLY,2,1,2,0,Y=25,X=10
+client2  sent APPLY,3,1,2,0,Y=25,X=10
+server1  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 1
+
+server2  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 2
+
+server3  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=25, X=10} vVal: {} sender: 2 logPosition: 0 datacenter: 3
+
+server1  sent PREPARE,SUCCESS,-1,-1,1,1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+server2  sent PREPARE,SUCCESS,-1,-1,2,1
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,-1,3,1
+client2 ABORTED :(
+client 1  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+client 2  sent POSITION,1,2
+client1  sent ACCEPT,1,0,1,1,Y=10
+client 2  sent POSITION,2,2
+client1  sent ACCEPT,2,0,1,1,Y=10
+server1  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 1
+
+client 2  sent POSITION,3,2
+client1  sent ACCEPT,3,0,1,1,Y=10
+server1  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 1
+
+server2  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 2
+
+server3  received  type: POSITION propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: -1 datacenter: 3
+
+server3  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 3
+
+server2  received  type: ACCEPT propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 2
+
+client:2 Start of prepare received LogPosition:1
+client 2  sent PREPARE,1,0,2,1
+client 2  sent PREPARE,2,0,2,1
+client 2  sent PREPARE,3,0,2,1
+server1  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+server2  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: PREPARE propNum: 0 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+server1  sent ACCEPT,-1,true,1,1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+server2  sent ACCEPT,-1,true,2,1
+client 1  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+client1  sent APPLY,1,0,1,1,Y=10
+client1  sent APPLY,2,0,1,1,Y=10
+server1  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 1
+
+client1  sent APPLY,3,0,1,1,Y=10
+server2  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 2
+
+server3  received  type: APPLY propNum: 0 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 1 logPosition: 1 datacenter: 3
+
+server1  sent PREPARE,FAILURE,-1,0,1,1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+server3  sent PREPARE,FAILURE,-1,0,3,1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+server2  sent PREPARE,FAILURE,-1,0,2,1
+client 2  received  type: PREPARE_FAILURE propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+client2 FAILED AT PREPARE, RESTARTING WITH PROPNUM 1
+client 2  sent PREPARE,1,1,2,1
+client 2  sent PREPARE,2,1,2,1
+client 2  sent PREPARE,3,1,2,1
+server1  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+server2  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: PREPARE propNum: 1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+Server1 Client:-1 wrote to positon:1 Now new log position=2
+Server3 Client:-1 wrote to positon:1 Now new log position=2
+Server2 Client:-1 wrote to positon:1 Now new log position=2
+client1 COMMITTED :) {Y=10}
+server1  sent PREPARE,SUCCESS,-1,0,1,1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=10} sender: 1 logPosition: 1 datacenter: -1
+
+server3  sent PREPARE,SUCCESS,-1,0,3,1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=10} sender: 3 logPosition: 1 datacenter: -1
+
+server2  sent PREPARE,SUCCESS,-1,0,2,1,Y=10
+client 2  received  type: PREPARE_SUCCESS propNum: -1 vBalloutNumber: 0 propVal: {} vVal: {Y=10} sender: 2 logPosition: 1 datacenter: -1
+
+client2  sent ACCEPT,1,1,2,1,Y=10
+client2  sent ACCEPT,2,1,2,1,Y=10
+client2  sent ACCEPT,3,1,2,1,Y=10
+server1  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+server2  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: ACCEPT propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+server1  sent ACCEPT,-1,true,1,1
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 1 logPosition: 1 datacenter: -1
+
+server2  sent ACCEPT,-1,true,2,1
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 2 logPosition: 1 datacenter: -1
+
+server3  sent ACCEPT,-1,true,3,1
+client 2  received  type: ACCEPT propNum: -1 vBalloutNumber: -1 propVal: {} vVal: {} sender: 3 logPosition: 1 datacenter: -1
+
+client2  sent APPLY,1,1,2,1,Y=10
+client2  sent APPLY,2,1,2,1,Y=10
+server1  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 1
+
+client2  sent APPLY,3,1,2,1,Y=10
+server2  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 2
+
+server3  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 3
+
+client2 ABORTED :(
