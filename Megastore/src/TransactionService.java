@@ -33,11 +33,14 @@ public class TransactionService
 	private WriteLog log;
 	private long id;
 	private int listenPort;
+	private Logging internLog;
 	
 	public TransactionService(long id,int listenPort)
 	{
 		this.listenPort = listenPort;
 		this.id = id;
+		internLog = new Logging("SERVICE"+String.valueOf(id), 
+				"log_server_"+String.valueOf(id));
 		new ConnectionHandler().start();
 		/*Creates a log for an entity key=1*/
 		try {
@@ -57,6 +60,7 @@ public class TransactionService
 		}	
 		
 	}
+	
 	class ConnectionHandler extends Thread
 	{//Listener for Server, just listens for connection
 		private ServerSocket serverSocket;
@@ -110,7 +114,10 @@ public class TransactionService
 			try {
 				message = fromTransactionClient.readLine();
 				MessageContent parsedMessage = Messages.parse(message);
-				InternalMessageLog.WriteLog("server"+ id, " received " + parsedMessage.toString() );
+				
+				//InternalMessageLog.WriteLog("server"+ id, " received " + parsedMessage.toString() );
+				internLog.write("MESSAGE	RECEIVED	"+Messages.log(message));
+				
 				if(parsedMessage.messageType.equals("PREPARE")) {
 					receive_prepare(parsedMessage.cid, parsedMessage.propositionNumber,toTransactionClient, parsedMessage.logPosition);
 				}
@@ -122,6 +129,7 @@ public class TransactionService
 				}
 				else if(parsedMessage.messageType.equals("POSITION")) {
 					String message = Messages.sendGetPositionFromServiceToClient((int)id, String.valueOf(id), log.getPosition());
+					internLog.write("MESSAGE	SENT	"+Messages.log(message));
 					toTransactionClient.println(message);
 					toTransactionClient.flush();
 				}
@@ -152,16 +160,18 @@ public class TransactionService
 				System.out.println("log position"  + p);
 				if(propNum > result.vNextBal) {
 					if(log.checkAndWrite(p,result.vNextBal,propNum)) {
-						InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, String.valueOf(id), position, result.values));
+						//InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, String.valueOf(id), position, result.values));
 						String message = Messages.sendPrepareSuccessFromServiceToClient(cid, result.vBalloutNumber, String.valueOf(id), position, result.values);
+						internLog.write("MESSAGE	SENT	"+Messages.log(message));
 						toTransactionClient.println(message);
 						toTransactionClient.flush();
 						keepTrying = false;
 					}
 				}
 				else {
-					InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber, String.valueOf(id), position));
+				//	InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber, String.valueOf(id), position));
 					String message = Messages.sendPrepareFailureFromServiceToClient(cid,result.vBalloutNumber, String.valueOf(id), position);
+					internLog.write("MESSAGE	SENT	"+Messages.log(message));
 					toTransactionClient.println(message);
 					toTransactionClient.flush();
 					keepTrying = false;
@@ -188,13 +198,14 @@ public class TransactionService
 			if(log.checkAndWrite(position, propNum, value)) {
 				//success
 				message = Messages.sendAcceptFromServiceToClient(cid,true,String.valueOf(id), position);
-				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,true, String.valueOf(id), position));
-
+				internLog.write("MESSAGE	SENT	"+Messages.log(message));
+//				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,true, String.valueOf(id), position));
 			}
 			else {
 				//failure
 				message = Messages.sendAcceptFromServiceToClient(cid,false,String.valueOf(id),position);
-				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,false,String.valueOf(id),position));
+				internLog.write("MESSAGE	SENT	"+Messages.log(message));
+//				InternalMessageLog.WriteLog("server"+ id, " sent " + Messages.sendAcceptFromServiceToClient(cid,false,String.valueOf(id),position));
 			}
 			//send message
 			toTransactionClient.println(message);
@@ -214,15 +225,18 @@ public class TransactionService
 		try {
 			if(position == log.getPosition()) {
 			log.write(position,propNum,value);
-			InternalMessageLog.WriteLog("Server" +id, "Client:"+ cid + " wrote to positon:" + position + " Now new log position="+log.getPosition());
+			internLog.write("PAXOS SERVER "+cid+" WRITES "+value+" TO LOG");
+			internLog.write("WRITE LOG:\n"+log.toString());
+			//InternalMessageLog.WriteLog("Server" +id, "Client:"+ cid + " wrote to positon:" + position + " Now new log position="+log.getPosition());
 			}
 			else if(position > log.getPosition()){
-				InternalMessageLog.WriteLog("server" + id, "Client:" + cid + " is trying to write to a future position " + position +"BUG");
+				//InternalMessageLog.WriteLog("server" + id, "Client:" + cid + " is trying to write to a future position " + position +"BUG");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
 	public static void main(String[] args) 
 	{
 		InternalMessageLog.init();
@@ -230,5 +244,4 @@ public class TransactionService
 		TransactionService service2 = new TransactionService(2,11112);
 		TransactionService service3 = new TransactionService(3,11113);
 	}
-
 }
