@@ -592,3 +592,4 @@ server2  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVa
 server3  received  type: APPLY propNum: 1 vBalloutNumber: -1 propVal: {Y=10} vVal: {} sender: 2 logPosition: 1 datacenter: 3
 
 client2 ABORTED :(
+====================== ======================

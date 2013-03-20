@@ -210,6 +210,7 @@ public class TransactionClient {
 		Transaction t = new Transaction(transactionID);
 		currentTransaction = t;
 		ActiveTransactions.put(transactionID,t);
+		SendMessagetoAllServers("POSITION",null);
 	}
 
 
@@ -255,7 +256,7 @@ public class TransactionClient {
 		Transaction t = ActiveTransactions.get(transactionID);
 		//code for commit protocol
 		HashMap<String,String> propVal = t.WriteSet;
-		SendMessagetoAllServers("POSITION",null);
+
 	//	InternalMessageLog.WriteLog("client:"+id, "Start of prepare received LogPosition:" + logPosition);
 		internLog.write("START PAXOS	TRANSACTION="+transactionID+"	LOG_POSITION="+t.position);		
 		
