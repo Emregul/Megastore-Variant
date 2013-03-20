@@ -21,6 +21,7 @@ public class Transaction {
 	public HashMap<String,String> WriteSet;
 	public long transactionID;
 	public long timestamp;
+	public long position;
 	
 	/**
 	 * Constructor
@@ -35,6 +36,10 @@ public class Transaction {
 	
 	public long getTimestamp() {
 		return this.timestamp;
+	}
+	public void setPosition(long position)
+	{
+		this.position = position;
 	}
 	
 	/**

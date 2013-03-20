@@ -34,9 +34,10 @@ public class TransactionClient {
 	private long id;
 	private ArrayList<MessageContent> responseSet;
 	private int ackCount;
-	private long logPosition;	//FIXME: How to set this?
+	//private long logPosition;	//FIXME: How to set this?
 	private long olderlogPosition;
 	Logging internLog;
+	private Transaction currentTransaction;
 
 	/**
 	 * Constructor
@@ -46,7 +47,7 @@ public class TransactionClient {
 		this.id = id;
 		ActiveTransactions = new HashMap<Long,Transaction>();
 		responseSet = new ArrayList<MessageContent>();
-		logPosition = 0;
+		//logPosition = 0;
 		olderlogPosition = -1;
 		internLog = new Logging("CLIENT"+String.valueOf(id), 
 				"log_client_"+String.valueOf(id));
@@ -100,6 +101,7 @@ public class TransactionClient {
 			Socket socket;
 			InetSocketAddress serverAddress = Settings.serverIpList[i];
 			String message = "";
+			long logPosition = currentTransaction.position;
 			try {//Creates a socket connection and a message depending on the messagetype, writes to log as well
 				socket = new Socket(serverAddress.getHostName(),serverAddress.getPort());
 				if (messageType.equals("PREPARE"))
@@ -180,7 +182,8 @@ public class TransactionClient {
 					{//update the responseset and ackcount based on a log
 						if (parsedResponse.messageType.equals("POSITION"))
 						{
-							logPosition = parsedResponse.logPosition;
+							//logPosition = parsedResponse.logPosition;
+							currentTransaction.setPosition( parsedResponse.logPosition);
 						}else
 						{
 							//InternalMessageLog.WriteLog("client "+id, " received " + parsedResponse.toString());
@@ -205,6 +208,7 @@ public class TransactionClient {
 	 */
 	public void begin(long transactionID) {
 		Transaction t = new Transaction(transactionID);
+		currentTransaction = t;
 		ActiveTransactions.put(transactionID,t);
 	}
 
@@ -253,7 +257,7 @@ public class TransactionClient {
 		HashMap<String,String> propVal = t.WriteSet;
 		SendMessagetoAllServers("POSITION",null);
 	//	InternalMessageLog.WriteLog("client:"+id, "Start of prepare received LogPosition:" + logPosition);
-		internLog.write("START PAXOS	TRANSACTION="+transactionID+"	LOG_POSITION="+logPosition);		
+		internLog.write("START PAXOS	TRANSACTION="+transactionID+"	LOG_POSITION="+t.position);		
 		
 		if(runPAXOSGivenPropNum(propVal)) {
 			ActiveTransactions.remove(transactionID);
