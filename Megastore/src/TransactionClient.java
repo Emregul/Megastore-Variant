@@ -209,8 +209,8 @@ public class TransactionClient {
 	public void begin(long transactionID) {
 		Transaction t = new Transaction(transactionID);
 		currentTransaction = t;
-		ActiveTransactions.put(transactionID,t);
 		SendMessagetoAllServers("POSITION",null);
+		ActiveTransactions.put(transactionID,currentTransaction);
 	}
 
 
@@ -256,7 +256,7 @@ public class TransactionClient {
 		Transaction t = ActiveTransactions.get(transactionID);
 		//code for commit protocol
 		HashMap<String,String> propVal = t.WriteSet;
-
+		currentTransaction = t;
 	//	InternalMessageLog.WriteLog("client:"+id, "Start of prepare received LogPosition:" + logPosition);
 		internLog.write("START PAXOS	TRANSACTION="+transactionID+"	LOG_POSITION="+t.position);		
 		
@@ -269,7 +269,6 @@ public class TransactionClient {
 			return true;
 		}
 		
-		//promotion here
 		else { 
 			//new change - Vivek
 			this.propNum = 0;
@@ -322,14 +321,36 @@ public class TransactionClient {
 		{//IF THE PROPOVALUE FROM THE SERVER EQUALS TO OUR PROPVAL WE WON!
 			//InternalMessageLog.WriteLog("client"+id, "COMMITTED :) " +propValue);
 			return true;
-		}else
-		{
-			//InternalMessageLog.WriteLog("client"+id, "ABORTED :(");
-			return false;
 		}
+		//try promotion
+		else
+		{
+			if (IntersectionMaps(propValue,propVal) || IntersectionMaps(propValue,currentTransaction.ReadSet)) {
+				internLog.write("PROMOTION FAILED");
+				return false; //abort
+			}		
+			else {
+				internLog.write("PAXOS PROMOTION");
+				this.propNum =0;
+				//get position again
+				SendMessagetoAllServers("POSITION",null);
+				return commit(currentTransaction.transactionID);
+			}
 
-
+		}
 	}
+	
+	public static boolean IntersectionMaps(HashMap<String,String> map1, HashMap<String,String> map2) {
+		boolean result = false;
+		for(String key : map1.keySet()) {
+			if(map2.containsKey(key)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
 
 	private List<MessageContent>  preparePhaseForPAXOS(HashMap<String,String> propVal)
 	{
