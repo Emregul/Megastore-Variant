@@ -224,15 +224,14 @@ public class TransactionClient {
 
 		Transaction t = ActiveTransactions.get(transactionID);
 		String value = t.readLocal(key);
-		if(value != null)
-			return value;
-		else
+		if(value == null) {
 			try {
 				value = db.read(key, t.timestamp);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
+		}
+		t.addToReadSet(key,value);
 		return value;
 	}
 
