@@ -34,8 +34,10 @@ public class TransactionClient {
 	private long id;
 	private ArrayList<MessageContent> responseSet;
 	private int ackCount;
-	private long logPosition;	//FIXME: How to set this?
+	//private long logPosition;	//FIXME: How to set this?
 	private long olderlogPosition;
+	Logging internLog;
+	private Transaction currentTransaction;
 
 	/**
 	 * Constructor
@@ -45,8 +47,10 @@ public class TransactionClient {
 		this.id = id;
 		ActiveTransactions = new HashMap<Long,Transaction>();
 		responseSet = new ArrayList<MessageContent>();
-		logPosition = 0;
+		//logPosition = 0;
 		olderlogPosition = -1;
+		internLog = new Logging("CLIENT"+String.valueOf(id), 
+				"log_client_"+String.valueOf(id));
 		try {
 			db = new Database();
 		} catch (IOException e) {
@@ -97,24 +101,29 @@ public class TransactionClient {
 			Socket socket;
 			InetSocketAddress serverAddress = Settings.serverIpList[i];
 			String message = "";
+			long logPosition = currentTransaction.position;
 			try {//Creates a socket connection and a message depending on the messagetype, writes to log as well
 				socket = new Socket(serverAddress.getHostName(),serverAddress.getPort());
 				if (messageType.equals("PREPARE"))
 				{
-					InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendPrepareFromClientToService(i+1, propNum, String.valueOf(id), logPosition));
+					//InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendPrepareFromClientToService(i+1, propNum, String.valueOf(id), logPosition));
 					message = Messages.sendPrepareFromClientToService(i+1, propNum, String.valueOf(id), logPosition);
+					internLog.write("MESSAGE	SENT	"+Messages.log(message));
 				}else if (messageType.equals("APPLY"))
 				{
-					InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendApplyFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue));
+					//InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendApplyFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue));
 					message = Messages.sendApplyFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue);
+					internLog.write("MESSAGE	SENT	"+Messages.log(message));
 				}else if (messageType.equals("ACCEPT"))
 				{
-					InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendAcceptFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue));
+					//InternalMessageLog.WriteLog("client"+id, " sent " + Messages.sendAcceptFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue));
 					message = Messages.sendAcceptFromClientToService(i+1, propNum, String.valueOf(id), logPosition, propValue);
+					internLog.write("MESSAGE	SENT	"+Messages.log(message));
 				}else if (messageType.equals("POSITION"))
 				{
-					InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendGetPositionFromClientToService(i+1,String.valueOf(id)));
+					//InternalMessageLog.WriteLog("client " + id, " sent " + Messages.sendGetPositionFromClientToService(i+1,String.valueOf(id)));
 					message = Messages.sendGetPositionFromClientToService(i+1,String.valueOf(id));
+					internLog.write("MESSAGE	SENT	"+Messages.log(message));
 				}else
 				{
 					System.err.println("client" + id + "NOONE DARES COMETH" + messageType);
@@ -167,15 +176,17 @@ public class TransactionClient {
 				//gets the response from Server, it can be null(Applyphase)
 				if (fromServer != null)
 				{
+					internLog.write("MESSAGE	RECEIVED	"+Messages.log(fromServer));
 					MessageContent parsedResponse = Messages.parse(fromServer);
 					synchronized(responseSet)
 					{//update the responseset and ackcount based on a log
 						if (parsedResponse.messageType.equals("POSITION"))
 						{
-							logPosition = parsedResponse.logPosition;
+							//logPosition = parsedResponse.logPosition;
+							currentTransaction.setPosition( parsedResponse.logPosition);
 						}else
 						{
-							InternalMessageLog.WriteLog("client "+id, " received " + parsedResponse.toString());
+							//InternalMessageLog.WriteLog("client "+id, " received " + parsedResponse.toString());
 							if (parsedResponse.status)
 								ackCount++;
 							responseSet.add(parsedResponse);
@@ -197,6 +208,7 @@ public class TransactionClient {
 	 */
 	public void begin(long transactionID) {
 		Transaction t = new Transaction(transactionID);
+		currentTransaction = t;
 		ActiveTransactions.put(transactionID,t);
 	}
 
@@ -244,17 +256,25 @@ public class TransactionClient {
 		//code for commit protocol
 		HashMap<String,String> propVal = t.WriteSet;
 		SendMessagetoAllServers("POSITION",null);
-		InternalMessageLog.WriteLog("client:"+id, "Start of prepare received LogPosition:" + logPosition);
+	//	InternalMessageLog.WriteLog("client:"+id, "Start of prepare received LogPosition:" + logPosition);
+		internLog.write("START PAXOS	TRANSACTION="+transactionID+"	LOG_POSITION="+t.position);		
+		
 		if(runPAXOSGivenPropNum(propVal)) {
 			ActiveTransactions.remove(transactionID);
 			//new change - Vivek
 			this.propNum = 0;
+			internLog.write("END PAXOS	TRANSACTION="+transactionID+"	COMMITTED PROPVAL="+propVal);		
+			
 			return true;
 		}
+		
 		//promotion here
 		else { 
 			//new change - Vivek
 			this.propNum = 0;
+			
+			internLog.write("END PAXOS	TRANSACTION="+transactionID+"	ABORTED");		
+			
 			return false;
 		}
 	}
@@ -274,6 +294,8 @@ public class TransactionClient {
 		//PREPARE PHASE
 		List<MessageContent> responseSet = preparePhaseForPAXOS(propVal);
 		//ACCEPT PHASE
+		
+		internLog.write("PAXOS ACCEPT");
 		HashMap<String,String> propValue = findWinningVal(responseSet, propVal);
 		SendMessagetoAllServers("ACCEPT", propValue);
 
@@ -283,7 +305,8 @@ public class TransactionClient {
 				//RETRY ACCEPT IF MAJORITY IS NOT REACHED
 				Thread.sleep((long) (Math.random()*100));
 				propNum  = nextPropNumber(responseSet,propNum+1);
-				InternalMessageLog.WriteLog("client"+id, "FAILED AT ACCEPT, RESTARTING WITH PROPNUM " +  propNum);
+				//InternalMessageLog.WriteLog("client"+id, "FAILED AT ACCEPT, RESTARTING WITH PROPNUM " +  propNum);
+				internLog.write("PAXOS FAILURE ON ACCEPT");
 				return runPAXOSGivenPropNum(propVal);
 				//return false;
 			} catch (InterruptedException e) {
@@ -292,14 +315,15 @@ public class TransactionClient {
 			}
 		}
 
+		internLog.write("PAXOS APPLY");
 		SendMessagetoAllServers("APPLY", propValue);
 		if (propValue.equals(propVal))
 		{//IF THE PROPOVALUE FROM THE SERVER EQUALS TO OUR PROPVAL WE WON!
-			InternalMessageLog.WriteLog("client"+id, "COMMITTED :) " +propValue);
+			//InternalMessageLog.WriteLog("client"+id, "COMMITTED :) " +propValue);
 			return true;
 		}else
 		{
-			InternalMessageLog.WriteLog("client"+id, "ABORTED :(");
+			//InternalMessageLog.WriteLog("client"+id, "ABORTED :(");
 			return false;
 		}
 
@@ -310,6 +334,7 @@ public class TransactionClient {
 	{
 		boolean keepTrying = true;
 		int D = Settings.serverIpList.length;
+		internLog.write("PAXOS	PREPARE	PROPNUM="+propNum);
 		while (keepTrying)
 		{
 			responseSet = new ArrayList<MessageContent>();
@@ -321,7 +346,8 @@ public class TransactionClient {
 				try {
 					Thread.sleep((long) (Math.random()*100));
 					propNum  = nextPropNumber(responseSet,propNum+1);
-					InternalMessageLog.WriteLog("client"+id, "FAILED AT PREPARE, RESTARTING WITH PROPNUM " +  propNum);
+					internLog.write("PAXOS	FAILURE ON PREPARE");
+					//InternalMessageLog.WriteLog("client"+id, "FAILED AT PREPARE, RESTARTING WITH PROPNUM " +  propNum);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

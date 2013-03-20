@@ -13,7 +13,6 @@ class MessageContent{
 	 * Constructor
 	 */
 	public MessageContent(){
-		datacenter = -1;
 		propositionNumber = -1;
 		propositionValues = new HashMap<String,String>();
 		cid = -1;
@@ -42,8 +41,8 @@ class MessageContent{
 		sb.append(sender);
 		sb.append(" logPosition: ");
 		sb.append(logPosition);
-		sb.append(" datacenter: ");
-		sb.append(datacenter);
+		sb.append(" cid: ");
+		sb.append(cid);
 		sb.append("\n");
 		return sb.toString();
 	}
@@ -55,7 +54,6 @@ class MessageContent{
 	}
 	
 	public String entityKey;
-	public int datacenter;
 	public long propositionNumber;
 	public HashMap<String,String> propositionValues;
 	public int cid;
@@ -75,6 +73,61 @@ class MessageContent{
  *
  */
 public class Messages {
+	
+	public static String log(String message){
+		String logMessage = "";
+		
+		MessageContent cont = getContent(message);
+		
+		if(isSendPrepareFromClientToService(message)){
+			logMessage = "PREPARE FROM CLIENT "+cont.sender
+					+" TO SERVICE "+cont.cid+
+					" PROPNUM="+cont.propositionNumber;
+		}
+		
+		if(isSendAcceptFromClientToService(message)){
+			logMessage = "ACCEPT FROM CLIENT "+cont.sender
+					+" TO	SERVICE "+cont.cid+
+					" PROPNUM="+cont.propositionNumber+
+					" PROPVAL="+cont.propositionValues;
+		}
+		
+		if(isSendApplyFromClientToService(message)){
+			logMessage = "APPLY FROM CLIENT "+cont.sender
+					+" TO	SERVICE "+cont.cid+
+					" PROPNUM="+cont.propositionNumber+
+					" PROPVAL="+cont.propositionValues;
+		}
+		
+		if(isSendGetPositionFromClientToService(message)){
+			logMessage = "GET POSITION FROM CLIENT "+cont.sender
+					+" TO SERVICE "+cont.cid;
+		}
+
+		if(isSendGetPositionFromServiceToClient(message)){
+			logMessage = "GET POSITION="+cont.logPosition+
+					" FROM SERVICE "+cont.sender;
+		}
+		
+		if(isSendPrepareSuccessFromServiceToClient(message)){
+			logMessage = "PREPARE SUCCESS FROM SERVICE "
+					+cont.sender+" BALLOUTNUMBER="+cont.vBalloutNumber+
+					" VVALUE="+cont.vValues;
+		}
+		
+		if(isSendPrepareFailureFromServiceToClient(message)){
+			logMessage = "PREPARE FAILURE FROM SERVICE "
+					+cont.sender+" BALLOUTNUMBER="+cont.vBalloutNumber;
+		}
+
+		if(Messages.isSendAcceptFromServiceToClient(message)){
+			logMessage = "ACCEPT FROM SERVICE "
+					+cont.sender+" STATUS="+cont.status;
+		}
+				
+		return logMessage;
+	}
+	
 	/**
 	 * Parses a message, which means identifying the type of message and printing it.
 	 * 
@@ -140,7 +193,6 @@ public class Messages {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		int datacenter  = 0;
 		long propositionNumber = 10;
 		HashMap<String,String> propositionValues = new HashMap<String,String>();
 		int cid = 1000;
@@ -158,17 +210,17 @@ public class Messages {
 		vValues.put("Y", "4");
 		vValues.put("Z", "5");*/
 		
-		String message = Messages.sendPrepareFromClientToService(datacenter, propositionNumber,
+		String message = Messages.sendPrepareFromClientToService(cid, propositionNumber,
 				sender,logPosition);
 		System.out.println("message = "+message);
 		parse(message);
 		
-		message = Messages.sendAcceptFromClientToService(datacenter, propositionNumber, 
+		message = Messages.sendAcceptFromClientToService(cid, propositionNumber, 
 				sender, logPosition, propositionValues);
 		System.out.println("message = "+message);
 		parse(message);
 				
-		message = Messages.sendApplyFromClientToService(datacenter, propositionNumber, 
+		message = Messages.sendApplyFromClientToService(cid, propositionNumber, 
 				sender, logPosition, propositionValues);
 		System.out.println("message = "+message);
 		parse(message);
@@ -188,11 +240,11 @@ public class Messages {
 		System.out.println("message = "+message);
 		parse(message);
 		
-		message = Messages.sendGetPositionFromClientToService(datacenter, sender);
+		message = Messages.sendGetPositionFromClientToService(cid, sender);
 		System.out.println("message = "+message);
 		parse(message);
 
-		message = Messages.sendGetPositionFromServiceToClient(datacenter, sender, logPosition);
+		message = Messages.sendGetPositionFromServiceToClient(cid, sender, logPosition);
 		System.out.println("message = "+message);
 		parse(message);
 	}
@@ -546,7 +598,7 @@ String[] fields = message.split(",");
 		//return "PREPARE,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)+","
 		//	+sender+","+String.valueOf(logPosition);
 		if(Messages.isSendPrepareFromClientToService(message)){
-			content.datacenter = Integer.parseInt(fields[1]);
+			content.cid = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
 			content.messageType = "PREPARE";
 			content.sender = fields[3];
@@ -555,14 +607,14 @@ String[] fields = message.split(",");
 		
 		//return "POSITION,"+String.valueOf(datacenter)+","+sender;
 		if(Messages.isSendGetPositionFromClientToService(message)){
-			content.datacenter = Integer.parseInt(fields[1]);
+			content.cid = Integer.parseInt(fields[1]);
 			content.sender = fields[2];
 			content.messageType = "POSITION";
 		}
 		
 		//return "POSITION,"+String.valueOf(datacenter)+","+sender+","+String.valueOf(logPosition);
 		if(Messages.isSendGetPositionFromServiceToClient(message)){
-			content.datacenter = Integer.parseInt(fields[1]);
+			content.cid = Integer.parseInt(fields[1]);
 			content.sender = fields[2];
 			content.logPosition = Long.parseLong(fields[3]);
 			content.messageType = "POSITION";
@@ -572,7 +624,7 @@ String[] fields = message.split(",");
 		//String message = "ACCEPT,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)
 		//		+","+sender+","+String.valueOf(logPosition);
 		if(Messages.isSendAcceptFromClientToService(message)){
-			content.datacenter = Integer.parseInt(fields[1]);
+			content.cid = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
 			content.messageType ="ACCEPT";
 			content.sender = fields[3];
@@ -588,7 +640,7 @@ String[] fields = message.split(",");
 		//String message = "APPLY,"+String.valueOf(datacenter)+","+String.valueOf(propositionNumber)
 		//		+","+sender+","+String.valueOf(logPosition);
 		if(Messages.isSendApplyFromClientToService(message)){
-			content.datacenter = Integer.parseInt(fields[1]);
+			content.cid = Integer.parseInt(fields[1]);
 			content.propositionNumber = Long.parseLong(fields[2]);
 			content.messageType = "APPLY";
 			content.sender = fields[3];

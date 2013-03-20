@@ -150,8 +150,15 @@ public class WriteLog {
 	 */
 	public void erase() throws IOException{
 		HBaseAdmin hbase = new HBaseAdmin(config);
-		hbase.disableTable(tableName);
+		try
+		{
+			hbase.disableTable(tableName);
+		}catch(org.apache.hadoop.hbase.TableNotEnabledException e){
+			//Do nothing
+		}
+		
 		hbase.deleteTable(tableName);
+
 	}
 	
 	/**
@@ -306,6 +313,24 @@ public class WriteLog {
 				Bytes.toBytes(String.valueOf(initialNextBal)));
 		
 		table.put(p);
+	}
+	
+	public String toString(){
+		String logContent = "";
+		WriteLogReadResult result;
+		
+		for(long p = 0; p <= position; p++){
+			try {
+				result = read(p);
+				logContent += "POSITION="+p+"	nextBal="+result.vNextBal
+						+"	ballNum="+result.vBalloutNumber+"	value="+result.values+"\n";
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return logContent;
 	}
 	
 	/*Variables used by Paxos*/
